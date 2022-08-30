@@ -1,0 +1,7 @@
+*.egg*
+*__pycache*
+*.ipynb_checkpoints*
+*spark-warehouse*
+*.coverage*
+*.DS_Store*
+*.vscode/*

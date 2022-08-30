@@ -1,0 +1,22 @@
+*.egg*
+*__pycache*
+*.ipynb_checkpoints*
+*.zsh
+lightning_logs
+datasets/*
+output/*
+results/*
+explain/msp_results/*
+explain/soc_results/*
+explain/rnd_results/*
+data/physionet.org/*
+explain/cardiffnlp/*
+models/lr_results/*
+data/physionet.org/*
+*spark-warehouse*
+*.coverage*
+.DS_Store
+
+# VScode
+.vscode/
+.vscode/*

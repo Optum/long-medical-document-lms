@@ -1,0 +1,83 @@
+# Pipeline Parameters
+
+# Define LM type
+lm: 'bigbird' # one of ['reformer', 'bigbird']
+
+# Text params (Type: int)
+max_seq_len: 32768 # For reformer, must be divisible by LCM of lsh_chunk_length local_chunk_length and equal the product of the axial_pos_shapes
+vocab_size: 32000 # 32000 and 50358 are used in the BigBird paper but 25600 or 12600 might be necessary
+
+# Define the number of files we want when we batch data into memory during training
+# Should be greater than or equal to the number of pretrain and train records respectively
+# File partitions are defined initially in source prep for Spark, tokenization, masking,
+# And general memory efficiency when creating sequences, but the number of samples per file
+# Will be dictated by the number of files specified here for each data split
+pretrain_num_new_files: 857 # ceil(5481937 / 6400)
+train_num_new_files: 115 # ceil(730925 / 6400)
+
+# Define the max val files
+max_val_files: 20 # 128k val records
+max_test_files: 1000000000 # all test records
+
+# Output directory for tokenizers (Type: str)
+tokenizer_path: "/mnt/azureblobshare/models/F/"
+
+# Multi-label binarizer
+mlb_path: "/mnt/azureblobshare/nlp-modernisation/database/BYOL-mimic50_exp9/model_artifacts/mlb.pkl"
+
+# Define file prefixes for language modeling and document classification respectively
+lm_prefix: 'lm_'
+clf_prefix: 'clf_'
+
+# Labels info
+num_labels: 50
+
+# Continue pretraining from existing MLM
+continue_pretraining_mlm: False
+
+# Best MLM from which to continue pretraining or start fine-tuning
+mlm_checkpoint_path: "/mnt/azureblobshare/models/bigbird_for_mlm_mimic50/run_0/checkpoint-630/pytorch_model.bin"
+
+# Continue finetuning from existing model
+continue_finetuning: False
+
+# Best fine-tuned model from which to continue fine-tuning
+ft_model_checkpoint_path: "/mnt/azureblobshare/models/F/epoch_02599_mighty_island_xhygwy0j/icy_camel_5kjjknp2/bigbird_clf.ckpt"
+
+# Training configuration params
+debug: False
+seed: 42
+nodes: 4 # Set to 4 for full run
+gpus: 8
+max_epochs: 1000000000
+accumulation_steps: 4 # set to 4 for full run, only update weights after running this many backward steps and averaging the gradients
+batch_size: 1 # for ddp, effective batch size will be batch_size * gpus * num_nodes
+early_stopping_patience: 5
+save_top_k_models: 5
+check_val_every_n_epoch: 2
+workers: 8 # num workers for data loading
+
+# Model artifacts
+mlm_save_path: "./outputs/mlms"
+clf_save_path: "./outputs/clfs"
+
+# TensorBoard
+tensorboard_log_dir: './logs'
+
+# Inference params
+# Recommend inference on Standard_ND6s
+# AMP generally allows for 2x the batch size
+# But can impact performance
+inference_amp: False
+inference_batch_size: 2
+inference_workers: 4
+
+# Save path for predictions and targets
+ft_model_intermediate_ys_path: /mnt/azureblobshare/models/F/epoch_02599_mighty_island_xhygwy0j/icy_camel_5kjjknp2/intermediate_ys/
+ft_model_y_prob_path: "/mnt/azureblobshare/models/F/epoch_02599_mighty_island_xhygwy0j/icy_camel_5kjjknp2/y_prob.npy"
+ft_model_targets_path: "/mnt/azureblobshare/models/F/epoch_02599_mighty_island_xhygwy0j/icy_camel_5kjjknp2/y_true.npy"
+
+# Save paths for PR curves, label report, and metrics json
+ft_model_pr_curves_path: "/mnt/azureblobshare/models/F/epoch_02599_mighty_island_xhygwy0j/icy_camel_5kjjknp2/pr_curves.png"
+ft_model_label_report_path: "/mnt/azureblobshare/models/F/epoch_02599_mighty_island_xhygwy0j/icy_camel_5kjjknp2/label_report.csv"
+ft_model_all_metrics_path: "/mnt/azureblobshare/models/F/epoch_02599_mighty_island_xhygwy0j/icy_camel_5kjjknp2/all_metrics.json"
