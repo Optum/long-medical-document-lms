@@ -1,4 +1,7 @@
 # Pipeline Parameters
+# Only a handful of parameters from this file are used to generate explanations for
+# It is a parameter file leftover from LM pretraining and fine-tuning using the method 
+# Described in: https://medium.com/@joelstremmel22/multi-node-multi-gpu-comprehensive-working-example-for-pytorch-lightning-on-azureml-bde6abdcd6aa
 
 # Define LM type
 lm: 'bigbird' # one of ['reformer', 'bigbird']
