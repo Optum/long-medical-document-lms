@@ -4,27 +4,27 @@ Please note that this project is released with a [Contributor Code of Conduct](C
 
 ---
 
-# How to Contribute
+### How to Contribute
 
 Now that we have the disclaimer out of the way, let's get into how you can be a part of our project. There are many different ways to contribute.
 
-## Issues
+### Issues
 
 We track our work using Issues in GitHub. Feel free to open up your own issue to point out areas for improvement or to suggest your own new experiment. If you are comfortable with signing the waiver linked above and contributing code or documentation, grab your own issue and start working.
 
-## Coding Standards
+### Coding Standards
 
-We have some general guidelines towards contributing to this project.
+To contribute features, bug fixes, tests, examples, or documentation, please ensure that your code follows the [Pep 8](https://www.python.org/dev/peps/pep-0008/) style guide.  To do this run `pip install black` and `black *.py` from the base directory of this repository to reformat files using the [black code formatter](https://github.com/psf/black).
 
 ### Languages
 
-*Lua*
+*Python 3.8*
 
-## Pull Requests
+### Pull Requests
 
 If you've gotten as far as reading this section, then thank you for your suggestions.
 
-## Paperwork for Pull Requests
+### Paperwork for Pull Requests
 
 * Please read this guide and make sure you agree with our [Contributor License Agreement ("CLA")](INDIVIDUAL_CONTRIBUTOR_LICENSE.md).
 * Make sure git knows your name and email address:
@@ -38,7 +38,7 @@ If you've gotten as far as reading this section, then thank you for your suggest
 * The first time you open a pull request in this repository, you will see a comment on your PR with a link that will allow you to sign our Contributor License Agreement (CLA) if necessary.
 > The link will take you to a page that allows you to view our CLA.  You will need to click the `Sign in with GitHub to agree button` and authorize the cla-assistant application to access the email addresses associated with your GitHub account.  Agreeing to the CLA is also considered to be an attestation that you either wrote or have the rights to contribute the code.  All committers to the PR branch will be required to sign the CLA, but you will only need to sign once.  This CLA applies to all repositories in the Optum org.
 
-## General Guidelines
+### General Guidelines
 
 Ensure your pull request (PR) adheres to the following guidelines:
 

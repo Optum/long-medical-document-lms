@@ -1,0 +1,54 @@
+
+# Pretrained LM
+'lm_path': '/mnt/azureblobshare/models/bigbird-roberta-large/'
+
+# Model name
+'model_name': 'bigbird_for_mlm_imdb'
+
+# Output LM
+'output_path': '/mnt/azureblobshare/models/bigbird_for_mlm_imdb/'
+
+# Data path
+'data_path': '/mnt/azureblobshare/hf_datasets/imdb.hf'
+
+# Data loading and collation params
+'offline': True
+'rename_text_col': False
+'text_col_name': 'text'
+'create_val_split': True
+'val_frac_to_create': 0.1
+'mlm_prob': 0.15
+'dataloader_num_workers': 8
+
+# Run params
+'max_steps': 10000000 # Original RoBERTa trained for 300,000 steps with batch size 8,000
+'per_device_train_batch_size': 2
+'per_device_eval_batch_size': 2
+'per_device_test_batch_size': 2
+'accumulation_steps': 16 # effective batch size becomes 4 per device * 4 GPUs * 8 grad accumulation steps for 128 total
+'learning_rate': 0.00005
+'max_seq_len': 4096
+'metric_for_best_model': 'eval_loss'
+'evaluation_strategy': 'steps'
+'save_strategy': 'steps'
+'eval_steps': 40
+'save_steps': 40
+'logging_steps': 40
+'early_stopping_patience': 10
+'lr_scheduler_type': 'linear'
+'adam_beta1': 0.9
+'adam_beta2': 0.999
+'adam_epsilon': 0.00000001
+'warmup_steps': 400
+'weight_decay': 0.01
+'sharded_ddp': False
+'gradient_checkpointing': True
+'fp16': True
+'fp16_eval': False
+'seed': 1111
+'disable_tqdm': True
+'eval_accumulation_steps': 100
+
+# Resume from checkpoint
+'resume_training': False
+'checkpoint': "/mnt/azureblobshare/models/roberta_for_mlm_2019_page_level_full/run_1/checkpoint-280000/"
