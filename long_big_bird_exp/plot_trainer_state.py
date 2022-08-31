@@ -19,6 +19,7 @@ CHECKPOINT_PATH = (
     "/mnt/azureblobshare/models/bigbird_for_mlm_mimic50/run_0/checkpoint-2000/"
 )
 
+
 def main():
 
     # Get working dir

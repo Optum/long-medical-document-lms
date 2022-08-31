@@ -14,10 +14,7 @@ import torch
 import shutil
 import pickle
 from datasets import load_dataset, load_from_disk
-from transformers import (
-    AutoModelForSequenceClassification,
-    AutoTokenizer
-)
+from transformers import AutoModelForSequenceClassification, AutoTokenizer
 
 # Project imports
 from utils import check_average_precision
@@ -32,21 +29,27 @@ MAX_SEQ_LEN = 4096
 CLASS_STRATEGY = "multi_class"  # one of ['binary', 'multi_label', 'multi_class']
 
 # Data parameters
-DATA = "imdb" # one of ['sst2', 'yelp_polarity', 'mimic50', 'imdb']
-BATCH_SIZE = 32 # for tokenization only - To Do: collect sequences in batches when running inference
-NUM_SAMPLE = 500 # number of documents for which to generate explainations
+DATA = "imdb"  # one of ['sst2', 'yelp_polarity', 'mimic50', 'imdb']
+BATCH_SIZE = 32  # for tokenization only - To Do: collect sequences in batches when running inference
+NUM_SAMPLE = 500  # number of documents for which to generate explainations
 IDX2LABEL = {
     0: "Negative Sentiment",
     1: "Positive Sentiment",
 }  # for binary, the 0 index should be the negative label
 
 # Define label mapping
-if DATA == 'mimic50':
-    with open("/mnt/azureblobshare/nlp-modernisation/database/BYOL-mimic50_exp9/model_artifacts/goat_label2idx.pkl", "rb") as f:
+if DATA == "mimic50":
+    with open(
+        "/mnt/azureblobshare/nlp-modernisation/database/BYOL-mimic50_exp9/model_artifacts/goat_label2idx.pkl",
+        "rb",
+    ) as f:
         IDX2LABEL = {v: k for k, v in pickle.load(f).items()}
 else:
-    IDX2LABEL = {0: "Negative Sentiment", 1: "Positive Sentiment"} # provide dictionary of class indices and label names
-    
+    IDX2LABEL = {
+        0: "Negative Sentiment",
+        1: "Positive Sentiment",
+    }  # provide dictionary of class indices and label names
+
 # Set run parameters for experiment
 K = 5  # subwords in a masked block of text (size of phrase and also radius)
 N = 100  # number of samples to take
@@ -67,7 +70,9 @@ os.makedirs(OUTPUT_PATH)
 device = "cuda:0" if torch.cuda.is_available() else "cpu"
 
 # Load Data, Tokenizer, and Model
-dataset = load_from_disk(f'/mnt/azureblobshare/hf_datasets/{DATA}.hf') # use load_dataset(DATA) to pull from HuggingFace Datasets
+dataset = load_from_disk(
+    f"/mnt/azureblobshare/hf_datasets/{DATA}.hf"
+)  # use load_dataset(DATA) to pull from HuggingFace Datasets
 tokenizer = AutoTokenizer.from_pretrained(TOKENIZER)
 model = AutoModelForSequenceClassification.from_pretrained(MODEL)
 
@@ -78,6 +83,7 @@ def tokenize_function(batch):
     return tokenizer(
         batch["text"], padding="max_length", truncation=True, max_length=MAX_SEQ_LEN
     )
+
 
 # Tokenize Text
 dataset["test"] = dataset["test"].map(
@@ -121,7 +127,7 @@ for s, (doc_input_ids, doc_y) in enumerate(
         max_seq_len=MAX_SEQ_LEN,
         class_strategy=CLASS_STRATEGY,
     )
-    
+
     all_results.append(results)
 
     # Compute time to run RND on one doc
@@ -160,7 +166,7 @@ post_process_and_save_rnd_results(
     output_path=OUTPUT_PATH,
     n=N,
     k=K,
-    m=M
+    m=M,
 )
 
 # End timer
@@ -171,4 +177,3 @@ time_hours = (end_time - start_time) / 3600.0
 
 # View Runtime Results for Post-Processing
 print(f"Post-processing took {time_hours} hours for {NUM_SAMPLE} samples.")
-
