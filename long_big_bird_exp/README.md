@@ -7,7 +7,9 @@ Scripts to compute the importance of individual text blocks according to a fine-
 
 ### About
 
-The code in this subdirectory was used in XXX to generate explanations used the Masked Sampling Procedure (MSP) and compare it to 1) random sampling and 2) the [Sampling and Occlusion (SOC) algorithm from Jin et al.](https://arxiv.org/pdf/1911.06194.pdf)
+The code in this subdirectory was used in XXX to generate explanations using the Masked Sampling Procedure (MSP) and compare it to 1) random sampling and 2) the [Sampling and Occlusion (SOC) algorithm from Jin et al.](https://arxiv.org/pdf/1911.06194.pdf)  
+
+The very long Big Bird LM described in the paper was pretrained in a distributed fashion using [PyTorch Lightning](https://github.com/Lightning-AI/lightning) according to instructions in [this blogpost](https://medium.com/@joelstremmel22/multi-node-multi-gpu-comprehensive-working-example-for-pytorch-lightning-on-azureml-bde6abdcd6aa).  As such, code for this model is not provided, but the training procedure can be replicated by following along with the post and using the parameters described in our paper.  It is also possible to conduct pretraining from scratch with slight modifications to the code in `../general/models` by following along with the README or by checking out [this blog post](https://huggingface.co/blog/how-to-train) from Hugging Face.
 
 ### Environment
 
