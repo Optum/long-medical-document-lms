@@ -1,19 +1,17 @@
-# Text Block Importance for Long LMs
+# Text Block Importance for Big Bird Long LM
 
 [![python38](https://img.shields.io/badge/python-3.8-orange.svg)]()
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
-Scripts to compute the importance of individual text blocks in the classification of long documents using long document language models or any text-base classifier.
+Scripts to compute the importance of individual text blocks according to a fine-tuned [Big Bird LM](https://huggingface.co/google/bigbird-roberta-base).
 
 ### About
 
-This codebase contains scripts that compute the importance of text blocks to LM predictions for a given document using a variety of methods.
-We propose a novel method called Masked Sampling Procedure (MSP) and compare it to 1) random sampling and 2) the [Sampling and Occlusion (SOC) algorithm
-from Jin et al.](https://arxiv.org/pdf/1911.06194.pdf)
+The code in this subdirectory was used in XXX to generate explanations used the Masked Sampling Procedure (MSP) and compare it to 1) random sampling and 2) the [Sampling and Occlusion (SOC) algorithm from Jin et al.](https://arxiv.org/pdf/1911.06194.pdf)
 
 ### Environment
 
-These scripts are intended to be run in a Python 3.8 conda environment.  To create such an environment run `conda create --name text-blocks python=3.8` then `source activate text-blocks` to activate the environment. Dependencies can be installed from `requirements.txt` by running `pip install -r requirements.txt` from the base directory of this repository.  The experiment scripts are equipped to run LM inference on a single GPU VM and have been tested on Azure `Standard_NC6s_v3` machines.
+These scripts were run in a Python 3.8 conda environment.  To create such an environment run `conda create --name text-blocks python=3.8` then `source activate text-blocks` to activate the environment. Dependencies can be installed from `requirements.txt` by running `pip install -r requirements.txt` from the base directory of this repository.  The experiment scripts are equipped to run LM inference on a single GPU VM and have been tested on Azure `Standard_NC6s_v3` machines.
 
 ### Running Experiments
 
@@ -47,7 +45,3 @@ Below are mean runtimes over 20 experiments for each algorithm on documents of v
 | SOC | 0.31 (0.05) mins | 0.47 (0.04) mins | 2.17 (0.03) mins | 65.49 (0.59) mins |
 | MSP (P=0.1) | 0.27 (0.03) mins | 0.26 (0.03) mins | 0.33 (0.02) mins | 6.31 (0.08) mins |
 | MSP (P=0.5) | **0.11 (0.02) mins** | **0.12 (0.02) mins** | **0.12 (0.02) mins** | **1.41 (0.04) mins** |
-
-### Contributing
-
-To contribute features, bug fixes, tests, examples, or documentation, please submit a pull request with a description of your proposed changes or additions.  Please include a brief description of your pull request when submitting code  and ensure that your code follows the [Pep 8](https://www.python.org/dev/peps/pep-0008/) style guide.  To do this run `pip install black` and `black *.py` from the base directory of this repository to reformat files using the [black code formatter](https://github.com/psf/black).

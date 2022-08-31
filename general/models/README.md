@@ -1,19 +1,13 @@
 # Train LMs
 
+[![python38](https://img.shields.io/badge/python-3.8-orange.svg)]()
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+
 Pipeline to continue pretraining and fine-tune LMs from Hugging Face Transformers
-
-### Contents
-
-- [About](#about)
-- [Environment](#environment)
-- [Data Prep](#data-prep)
-- [Training](#training)
 
 ### About
 
-[![python38](https://img.shields.io/badge/python-3.8-orange.svg)]()
-
-This repository contains code to continue pretraining and fine-tune LMs from Hugging Face Transformers using the Transformers Python library.
+This subdirectory contains code to continue pretraining and fine-tune LMs from Hugging Face Transformers using the [Transformers Python library](https://github.com/huggingface/transformers).
 
 ### Environment
 
@@ -27,7 +21,7 @@ pip install -r requirements.txt
 
 ### Data Prep
 
-Data should be provided as a Hugging Face Dataset.
+Data should be provided as a [Hugging Face Dataset](https://huggingface.co/datasets).  To create a Hugging Face Dataset, check out their documentation [here](https://huggingface.co/docs/datasets/index).
 
 ### Training
 
