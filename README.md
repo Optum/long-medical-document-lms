@@ -1,4 +1,4 @@
-# Long Medical Document LMs 
+# Long Medical Document LMs
 
 [![python38](https://img.shields.io/badge/python-3.8-orange.svg)]()
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
@@ -24,7 +24,7 @@ This codebase contains scripts to:
 
 In our research paper XXX we propose a novel masked sampling procedure (MSP) to explain the predictions of any text classifier.  Our method is well-suited to very long, sparse-attention LMs, and has been validated for medical documents using two physician annotators.  
 
-### Evironment
+### Environment
 
 Code in subdirectories of this repository is designed to run in different Python 3.8 virtual environments using [Anaconda](https://www.anaconda.com/products/individual).  Separating environments helps to avoid dependency conflicts for the different parts of this codebase.  In general, create a new conda environment and install dependencies as follows:
 
@@ -46,7 +46,7 @@ We used the code in `long_big_bird_exp` to generate the results in our paper and
 
 ### Evaluation
 
-We used expert human annotaters to validate MSP, and you can take a look at the notebooks we used to generate blind experiment data for these annotators and analyze the results at `long_big_bird_exp/blind_experiment`.  For different datasets, you might wish to generate your own annotations using a similar approach.  Alternatively, [Murdoch et al.](https://arxiv.org/abs/1801.05453) and [Jin et al.](https://arxiv.org/pdf/1911.06194.pdf) use a method to automatically assess explanations by comparing importance scores of words or phrases from an explainability algorithm with Logisitc Regression.  This approach is limited in that multi-colinearity and other factors can impact coefficient estimates, and the method also assumes a linear relationship between bag-of-words or bag-of-phrase representations of text within a document and the document labels.  Still, this method provides a rough estimate of explanation fidelity. Code for this automated evaluation procedure can be found in `general/evaluate`.
+We used expert human annotaters to validate MSP, and you can take a look at the notebooks we used to generate blind experiment data for these annotators and analyze the results at `long_big_bird_exp/blind_experiment`.  For different datasets, you might wish to generate your own annotations using a similar approach.  Alternatively, [Murdoch et al.](https://arxiv.org/abs/1801.05453) and [Jin et al.](https://arxiv.org/pdf/1911.06194.pdf) use a method to automatically assess explanations by comparing importance scores of words or phrases from an explainability algorithm with Logistic Regression.  This approach is limited in that multi-collinearity and other factors can impact coefficient estimates, and the method also assumes a linear relationship between bag-of-words or bag-of-phrase representations of text within a document and the document labels.  Still, this method provides a rough estimate of explanation fidelity. Code for this automated evaluation procedure can be found in `general/evaluate`.
 
 ### Contributing
 
@@ -54,7 +54,7 @@ If you have a suggestion to improve this repository, please read `CONTRIBUTING.m
 
 1. Forking the project
 2. Creating your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commiting your changes (`git commit -m 'Add some AmazingFeature'`)
+3. Committing your changes (`git commit -m 'Add some AmazingFeature'`)
 4. Pushing to the branch (`git push origin feature/AmazingFeature`)
 5. Opening a pull request with a description of your changes
 
@@ -65,10 +65,12 @@ Distributed under the Apache 2.0 license. See `LICENSE.txt` for more information
 ### Maintainers
 
 - Joel Stremmel
-  - GitHub Enterprise: [github_username](https://github.com/jstremme)
-  - Email: joelstremmel22@gmail.com
+  - GitHub Username: [jstremme](https://github.com/jstremme)
+  - Email: joel_stremmel@optum.com
+- Brian Hill
+  - GitHub Username: [brianhill11](https://github.com/brianhill11)
+  - Email: brian.l.hill@optum.com
 
-### Citation 
+### Citation
 
 If you use this code in your research, please cite our paper: XXX.
-

@@ -28,11 +28,17 @@ from transformers import (
 )
 
 # Project imports
-from utils import check_empty_count_gpus, create_current_run, create_log_dir, get_bigbird_config
+from utils import (
+    check_empty_count_gpus,
+    create_current_run,
+    create_log_dir,
+    get_bigbird_config,
+)
 
 # Load run parameters
 with open("params.yml", "r") as stream:
     PARAMS = yaml.safe_load(stream)
+
 
 def get_model_and_tokenizer():
     """
@@ -65,6 +71,7 @@ def get_model_and_tokenizer():
     model.load_state_dict(new_state_dict, strict=True)
 
     return model, tokenizer
+
 
 def main():
 

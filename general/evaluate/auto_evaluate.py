@@ -57,7 +57,7 @@ for i, results_dir in enumerate([RND_RESULTS, SOC_RESULTS, MSP_RESULTS]):
             )
             exp_data_dfs.append(d_exp_data_df)
 
-# At this point, the experiment dataframe can be used to run a blind experiment with human annotators to determine the informativeness of text blocks for each label. 
+# At this point, the experiment dataframe can be used to run a blind experiment with human annotators to determine the informativeness of text blocks for each label.
 #  Before providing the experiment data:
 # - Sample the input data such that each algorithm is represented the same number of times.
 # - Ensure a random global ID exists that can map samples in the `all_info` dataframe to the experiment dataframe.
@@ -78,8 +78,8 @@ print(all_info_df.shape)
 print(exp_data_df.shape)
 print(combined_df.shape)
 
-# In the absense of human annotators for this demo notebook, we use the procedure from [Murdoch et al.](https://arxiv.org/pdf/1801.05453.pdf) 
-# and [Jin et al.](https://arxiv.org/pdf/1911.06194.pdf) to compute the correlation between importance scores from each explainability algorithm 
+# In the absense of human annotators for this demo notebook, we use the procedure from [Murdoch et al.](https://arxiv.org/pdf/1801.05453.pdf)
+# and [Jin et al.](https://arxiv.org/pdf/1911.06194.pdf) to compute the correlation between importance scores from each explainability algorithm
 # and coefficients from Logistic Regression.
 
 # Subset to algorithms to evaluate
