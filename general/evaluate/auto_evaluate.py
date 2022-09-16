@@ -2,16 +2,17 @@
 # coding: utf-8
 
 """
-Automatically Evaluate Explainability Algorithms 
+Automatically Evaluate Explainability Algorithms
 
-Auto evalaution is based on [Murdoch et al.](https://arxiv.org/pdf/1801.05453.pdf) and [Jin et al.](https://arxiv.org/pdf/1911.06194.pdf).  
-The idea is to compute the correlation between importance scores from each explainability algorithm and coefficients from Logistic Regression.  
+Auto evalaution is based on [Murdoch et al.](https://arxiv.org/pdf/1801.05453.pdf) and [Jin et al.](https://arxiv.org/pdf/1911.06194.pdf).
+The idea is to compute the correlation between importance scores from each explainability algorithm and coefficients from Logistic Regression.
 Here we use a Logisitic Regression model trained on multi-token blocks (n-grams) of text from each document in the dataset.
 A better evaluation requires human-annotators with domain expertise but can be conducted by providing a blinded dataset of
 the top K most important text blocks from each algorithm for each label, document pair in a representative subset of the test data.
 """
 
 # Open imports
+import os
 import glob
 import shutil
 import pickle
