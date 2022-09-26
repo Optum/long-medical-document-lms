@@ -1,3 +1,8 @@
-Please cite our paper if you use this code in your project.  Thank you!  
+Please cite our paper, [*Extend and Explain: Interpreting Very Long Language Models*](https://arxiv.org/abs/2209.01174),
+if you use this code in your project.  Thank you!
 
-XXX
+@misc{stremmel_extend_2022,
+	author = {Stremmel, Joel and Hill, Brian L. and Hertzberg, Jeffrey and Murillo, Jaime and Allotey, Llewelyn and Halperin, Eran},
+	month = sep,
+	title = {Extend and {Explain}: {Interpreting} {Very} {Long} {Language} {Models}},
+	year = {2022}}

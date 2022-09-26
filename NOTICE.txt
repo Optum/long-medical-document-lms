@@ -1,9 +1,11 @@
-<Insert Project Name Here>
+Long Medical Document Language Models
 Copyright 2022 Optum
 
 Project Description:
 ====================
-<Short description of your project>
+This project repository contains code to explain and train language models that extract information from long medical documents or any kind of text data with the Masked Sampling Procedure (MSP).
+It provides an implementation of MSP and documentation to help a user fine-tune a long LM from Hugging Face Transformers for document classification and explain the predictions of that model using MSP.
 
 Author(s):
-<List the names and GitHub IDs of the original project authors>
+- Joel Stremmel (jstremme)
+- Brian Hill (brianhill11)
