@@ -11,9 +11,9 @@
 # The max_seq_len should be that of the model and tokenizer
 # The class_strategy should be one of ['binary', 'multi_label', 'multi_class']
 # Based on the type of classification problem
-model: "aychang/roberta-base-imdb"
-lm: "roberta-base"
-tokenizer: "roberta-base"
+model: "textattack/distilbert-base-uncased-imdb"
+lm: "distilbert-base-uncased"
+tokenizer: "distilbert-base-uncased"
 max_seq_len: 512
 class_strategy: "multi_class"
 

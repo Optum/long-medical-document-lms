@@ -1,0 +1,27 @@
+# Set LR Training Parameters
+
+# Feature parameters
+# The tokenizer variable should point to a tokenizer available
+# On Hugging Face or point to a local version of a saved tokenizer
+# Set n_gram_range min and max to use n_grams of size min to max
+# For equal sizes blocks of text, n_gram_range_min should equal
+# n_gram_range_max, ensuring only one block of uniform size
+# The max_seq_len should come from the tokenizer and LM to which
+# The LR model is being compared/used to evaluate explanations
+# The threshold is used to compute performance metrics in the lr script
+tokenizer: "distilbert-base-uncased"
+n_gram_range_min: 5
+n_gram_range_max: 5
+max_seq_len: 512
+threshold: 0.5
+
+# Data parameters
+# Provide the name of a HuggingFace dataset if offline is set to False
+# Script has been tested with ['sst2', 'yelp_polarity', 'imdb']
+# If offline is set to True, provide the path to a saved HuggingFace dataset
+# The batch_size parameters is for tokenization only
+# The num_sample parameter is the number of documents to sample from
+# The test split of the provided dataset, which is used by default
+offline: False
+data: "imdb"
+batch_size: 32

@@ -9,3 +9,7 @@
 
 # Data
 explain/*_results_*
+
+# Plots
+models/seq_len_dist.png
+models/*_outputs_*

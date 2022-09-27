@@ -1,0 +1,9 @@
+# Auto Evaluation Parameters
+
+# Path to n-grams and coefficients from Logistic Regression
+lr_sorted_pairs: "../models/lr_outputs_imdb/ngram_range_5_5_features_coefs_count_vec_no_reg.pkl"
+
+# Results directories for explainability algorithms to evaluate
+rnd_results: "../explain/rnd_results_imdb/"
+soc_results: "../explain/soc_results_imdb/"
+msp_results: "../explain/msp_results_imdb/"

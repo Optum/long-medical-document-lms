@@ -31,7 +31,7 @@ from soc import predict_with_soc_algo, post_process_and_save_soc_results
 def main():
 
     # Load Run Parameters
-    with open("ft_params.yml", "r") as stream:
+    with open("params.yml", "r") as stream:
         PARAMS = yaml.safe_load(stream)
 
     # Define Logger
@@ -66,7 +66,7 @@ def main():
         dataset = load_dataset(PARAMS["data"])
     tokenizer = AutoTokenizer.from_pretrained(PARAMS["tokenizer"])
     model = AutoModelForSequenceClassification.from_pretrained(PARAMS["model"])
-    lm = AutoModelForMaskedLM.from_pretrained(params["lm"])
+    lm = AutoModelForMaskedLM.from_pretrained(PARAMS["lm"])
 
     # Tokenize Test Data
     def tokenize_function(batch):

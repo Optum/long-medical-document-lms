@@ -71,17 +71,17 @@ def main():
             batch["text"],
             padding="max_length",
             truncation=True,
-            max_length=params["max_seq_len"],
+            max_length=PARAMS["max_seq_len"],
         )
 
     # Tokenize Text
     # Code runs on the test data split by default
     dataset["test"] = dataset["test"].map(
-        tokenize_function, batched=True, batch_size=params["batch_size"]
+        tokenize_function, batched=True, batch_size=PARAMS["batch_size"]
     )
 
     # Take a Random Sample of the Test Data
-    sample_data = dataset["test"].shuffle()[0 : params["num_sample"]]
+    sample_data = dataset["test"].shuffle()[0 : PARAMS["num_sample"]]
 
     # Check Average Precision of Classifier
     # To Do: Add CIs to prediction
@@ -89,7 +89,7 @@ def main():
         model=model,
         data=sample_data,
         device=device,
-        class_strategy=params["class_strategy"],
+        class_strategy=PARAMS["class_strategy"],
         average="macro",
     )
 
@@ -102,22 +102,22 @@ def main():
     for s, doc_input_ids in enumerate(sample_data["input_ids"]):
 
         # Indicate sample number
-        logger.info(f"Running MSP for sample {s} of {params['num_sample']}...")
+        logger.info(f"Running MSP for sample {s} of {PARAMS['num_sample']}...")
 
         # Generate predictions with masked texts
         results = predict_with_masked_texts(
             model=model,
             input_ids=doc_input_ids,
-            n=params["N"],
-            k=params["K"],
-            p=params["P"],
+            n=PARAMS["N"],
+            k=PARAMS["K"],
+            p=PARAMS["P"],
             mask_token_id=tokenizer.mask_token_id,
-            idx2label=params["idx2label"],
-            print_every=params["print_every"],
-            debug=params["debug"],
+            idx2label=PARAMS["idx2label"],
+            print_every=PARAMS["print_every"],
+            debug=PARAMS["debug"],
             device=device,
-            max_seq_len=params["max_seq_len"],
-            class_strategy=params["class_strategy"],
+            max_seq_len=PARAMS["max_seq_len"],
+            class_strategy=PARAMS["class_strategy"],
         )
         all_results.append(results)
 
@@ -130,17 +130,17 @@ def main():
 
     # Compute results
     time_hours = (end_time - start_time) / 3600.0
-    time_per_doc = time_hours / params["num_sample"]
+    time_per_doc = time_hours / PARAMS["num_sample"]
 
     # Print results
     logger.info(
-        f"Simulation took {time_hours} hours for {params['num_sample']} samples with {params['N']} iterations."
+        f"Simulation took {time_hours} hours for {PARAMS['num_sample']} samples with {PARAMS['N']} iterations."
     )
     logger.info(
-        f"Ran a total of {params['num_sample'] * params['N']} model inferences."
+        f"Ran a total of {PARAMS['num_sample'] * PARAMS['N']} model inferences."
     )
     logger.info(
-        f"Time per doc (hours) averaged across {params['num_sample']} docs: {time_per_doc}."
+        f"Time per doc (hours) averaged across {PARAMS['num_sample']} docs: {time_per_doc}."
     )
 
     # Start timer
@@ -155,16 +155,16 @@ def main():
         times=times,
         device=device,
         tokenizer=tokenizer,
-        num_sample=params["num_sample"],
-        max_seq_len=params["max_seq_len"],
-        class_strategy=params["class_strategy"],
-        idx2label=params["idx2label"],
-        num_bootstrap=params["num_bootstrap"],
+        num_sample=PARAMS["num_sample"],
+        max_seq_len=PARAMS["max_seq_len"],
+        class_strategy=PARAMS["class_strategy"],
+        idx2label=PARAMS["idx2label"],
+        num_bootstrap=PARAMS["num_bootstrap"],
         output_path=output_path,
-        n=params["N"],
-        k=params["K"],
-        p=params["P"],
-        m=params["M"],
+        n=PARAMS["N"],
+        k=PARAMS["K"],
+        p=PARAMS["P"],
+        m=PARAMS["M"],
     )
 
     # End timer
@@ -175,7 +175,7 @@ def main():
 
     # View Runtime Results for Post-Processing
     logger.info(
-        f"Post-processing took {time_hours} hours for {params['num_sample']} samples."
+        f"Post-processing took {time_hours} hours for {PARAMS['num_sample']} samples."
     )
 
 
