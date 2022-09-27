@@ -1,3 +1,4 @@
+# Basic stuff
 *.egg*
 *__pycache*
 *.ipynb_checkpoints*
@@ -5,3 +6,6 @@
 *.coverage*
 *.DS_Store*
 *.vscode/*
+
+# Data
+explain/*_results_*
