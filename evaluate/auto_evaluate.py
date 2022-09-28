@@ -101,7 +101,7 @@ def main():
             joined_df["coefficient"].tolist(), joined_df["avg_score_diff"].tolist()
         )
         logger.info(
-            f"Algo: {algo} correlation with logistic regression coefficients: {round(corr, 5)} {round(p, 5)}."
+            f"Algo: {algo} correlation with logistic regression coefficients: {round(corr, 5)} (p={round(p, 5)})."
         )
 
 if __name__ == "__main__":
