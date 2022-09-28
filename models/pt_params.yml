@@ -1,15 +1,16 @@
+# LM Continued Pretraining Parameters
 
 # Pretrained LM
-'lm_path': '/mnt/azureblobshare/models/bigbird-roberta-large/'
+'lm_path': './bigbird-roberta-large/'
 
 # Model name
 'model_name': 'bigbird_for_mlm_imdb'
 
 # Output LM
-'output_path': '/mnt/azureblobshare/models/bigbird_for_mlm_imdb/'
+'output_path': './bigbird_for_mlm_imdb/'
 
 # Data path
-'data_path': '/mnt/azureblobshare/hf_datasets/imdb.hf'
+'data_path': './imdb.hf'
 
 # Data loading and collation params
 'offline': True
@@ -51,4 +52,4 @@
 
 # Resume from checkpoint
 'resume_training': False
-'checkpoint': "/mnt/azureblobshare/models/roberta_for_mlm_2019_page_level_full/run_1/checkpoint-280000/"
+'checkpoint': "./bigbird_for_mlm_imdb/checkpoint-280000/"

@@ -11,7 +11,7 @@ These notebooks were used to analyze the results in our paper.  They contain som
 
 ### Environment
 
-These notebooks require basic libraries like [NumPy](https://numpy.org/), [Pandas](https://pandas.pydata.org/), [SciPy](https://scipy.org/), [Matplotlib](https://matplotlib.org/), and [Scikit-Learn](https://scikit-learn.org/).  They can be installed at the top of each notebook if you don't already have them using 
+These notebooks require basic libraries like [NumPy](https://numpy.org/), [Pandas](https://pandas.pydata.org/), [SciPy](https://scipy.org/), [Matplotlib](https://matplotlib.org/), and [Scikit-Learn](https://scikit-learn.org/).  They can be installed at the top of each notebook if you don't already have them using
 
 ```
 !pip install sklearn
@@ -21,7 +21,7 @@ These notebooks require basic libraries like [NumPy](https://numpy.org/), [Panda
 
 ...which should install all necessary libraries.
 
-### Configurigng Parameters
+### Configuring Parameters
 
 Parameters for these notebooks are in all caps at the top of each notebook following imports.  Adjust the paths to point to your data from the explainability experiments.
 
