@@ -17,7 +17,7 @@ Data should be provided as a [Hugging Face Dataset](https://huggingface.co/datas
 
 All training scripts (except for `lr.py`) use [PyTorch Data Parallelism](https://pytorch.org/docs/stable/generated/torch.nn.DataParallel.html) to distribute training over a single node with multiple GPUs.  LM training scripts were tested on Azure `Standard_ND40rs_v2` machines which have 32 GB GPU RAM per GPU and 8 GPUs in total.  
 
-See the [HuggingFace Trainer documentation](https://huggingface.co/docs/transformers/main_classes/trainer) for more information on the parameters defined in the `.yml` files and passed to the Trainer in `pt.py` and `ft.py`.
+See the [HuggingFace Trainer documentation](https://huggingface.co/docs/transformers/main_classes/trainer) for more information on the parameters defined in the `pr_params.yml` and `ft_params.yml` files and passed to the Trainer in `pt.py` and `ft.py`.
 
 Code in `utils.py` handles the automatic creation of experiment directories on your file system to track new runs and save outputs such as model checkpoints, trainer state, and metrics to unique run directories.
 
@@ -31,4 +31,4 @@ After modifying `ft_params.yml`, run `python ft.py` to run fine-tuning.
 
 ##### Logisitic Regression
 
-Simply run `python lr.py` after modifying parameters in all caps at the top of the script to fit a logistic regression model and save the word or phrase features and corresponding coefficients.
+Simply run `python lr.py` after modifying parameters in `lr_params.yml` to fit a logistic regression model and save the word or phrase features and corresponding coefficients.
