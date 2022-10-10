@@ -39,12 +39,13 @@ def main():
     logger.info(f"Torch version: {torch.__version__}")
     logger.info(f"Transformers version: {transformers.__version__}")
 
-    # Define output path
-    output_path = (
-        f"./msp_results_{PARAMS['data']}/"  # will be deleted if it already exists
-    )
+    # Define output path according to offline or online data
+    if PARAMS["offline"]:
+        output_path = f"./msp_results_{PARAMS['data'].rstrip('/').split('/')[-1]}/"
+    else:
+        output_path = f"./msp_results_{PARAMS['data']}/"
 
-    # Create Directory to Save Results
+    # Create output directory
     # This script is for demo purposes and **will delete** the `output_path` directory if it exists on each new run.
     # Save important results elsewhere.
     if os.path.exists(output_path) and os.path.isdir(output_path):

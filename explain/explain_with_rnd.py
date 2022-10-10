@@ -38,10 +38,11 @@ def main():
     logger.info(f"Torch version: {torch.__version__}")
     logger.info(f"Transformers version: {transformers.__version__}")
 
-    # Output path
-    output_path = (
-        f"./rnd_results_{PARAMS['data']}/"  # will be deleted if it already exists
-    )
+    # Define output path
+    if PARAMS["offline"]:
+        output_path = f"./rnd_results_{PARAMS['data'].rstrip('/').split('/')[-1]}/"
+    else:
+        output_path = f"./rnd_results_{PARAMS['data']}/"
 
     # Create Directory to Save Results
     # This script is for demo purposes and **will delete** the `output_path` directory if it exists on each new run.
