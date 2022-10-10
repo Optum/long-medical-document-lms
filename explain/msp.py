@@ -229,7 +229,7 @@ def post_process_and_save_msp_results(
             final_df["label"] = label
 
             # Remove padding
-            all_pad_block = (tokenizer.pad_token + " ") * (k - 1) + tokenizer.pad_token
+            all_pad_block = tokenizer.pad_token * k
             final_df = final_df[final_df["text_block"] != all_pad_block]
 
             # Build the top M dataframe based on the masking procedure and add p values
