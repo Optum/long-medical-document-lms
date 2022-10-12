@@ -4,6 +4,7 @@ Module: Masked Sampling Procedure
 """
 import os
 import torch
+import random
 import numpy as np
 import pandas as pd
 from utils import (
@@ -70,7 +71,7 @@ def predict_with_masked_texts(
             block = input_ids[j : j + k]
 
             # Mask a block with probability P and add the block to the new sample
-            if np.random.random() < p:
+            if random.uniform(0, 1) < p:
                 mask_block = [mask_token_id] * k
                 new_sample.extend(mask_block)
                 masked_text_indices.append(j)
