@@ -99,21 +99,52 @@ def main():
         )
 
     # Define transformation to tokenize data in batches
-    dataset = dataset.map(
-        tokenize_function,
-        batched=True,
-        remove_columns=["text"],
-        batch_size=PARAMS["per_device_train_batch_size"],
-    ).with_format("torch")
+    dataset["train"] = (
+        dataset["train"]
+        .map(
+            tokenize_function,
+            batched=True,
+            remove_columns=["text"],
+            batch_size=PARAMS["per_device_train_batch_size"],
+        )
+        .with_format("torch")
+    )
+    dataset["val"] = (
+        dataset["val"]
+        .map(
+            tokenize_function,
+            batched=True,
+            remove_columns=["text"],
+            batch_size=PARAMS["per_device_eval_batch_size"],
+        )
+        .with_format("torch")
+    )
+    dataset["test"] = (
+        dataset["test"]
+        .map(
+            tokenize_function,
+            batched=True,
+            remove_columns=["text"],
+            batch_size=PARAMS["per_device_test_batch_size"],
+        )
+        .with_format("torch")
+    )
+
+    # Define problem type
+    # PyTorch expects multi-hot labels where each element is a float
+    # For multi-label classification with binary_cross_entropy_with_logits loss
+    if PARAMS["class_strategy"] == "binary":
+        problem_type = "single_label_classification"
+    elif PARAMS["class_strategy"] == "multi_label":
+        problem_type = "multi_label_classification"
 
     # Create sequence classifier from pretrained model
     model = AutoModelForSequenceClassification.from_pretrained(
-        PARAMS["lm_path"], num_labels=PARAMS["num_labels"], return_dict=True
+        PARAMS["lm_path"],
+        num_labels=PARAMS["num_labels"],
+        return_dict=True,
+        problem_type=problem_type,
     )
-
-    # Optionally formulate problem as binary classification with one label
-    if PARAMS["class_strategy"] == "binary":
-        model.problem_type = "single_label_classification"
 
     # Define early stopping callback
     early_stopping = EarlyStoppingCallback(

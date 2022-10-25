@@ -23,6 +23,7 @@ import numpy as np
 import pandas as pd
 from scipy.stats import pearsonr
 
+
 def main():
 
     # Load Run Parameters
@@ -34,13 +35,15 @@ def main():
     logger = logging.getLogger(__name__)
 
     # Load N-Gram Feature Weights from Logisitic Regression
-    with open(PARAMS['lr_sorted_pairs'], "rb") as f:
+    with open(PARAMS["lr_sorted_pairs"], "rb") as f:
         sorted_pairs = pickle.load(f)
 
     # Load Results from Explainability Experiments
     all_info_dfs = []
     exp_data_dfs = []
-    for i, results_dir in enumerate([PARAMS['rnd_results'], PARAMS['soc_results'], PARAMS['msp_results']]):
+    for i, results_dir in enumerate(
+        [PARAMS["rnd_results"], PARAMS["soc_results"], PARAMS["msp_results"]]
+    ):
         for j, file in enumerate(glob.glob(os.path.abspath(results_dir + "*"))):
             if "all_info" in file:
 
@@ -103,6 +106,7 @@ def main():
         logger.info(
             f"Algo: {algo} correlation with logistic regression coefficients: {round(corr, 5)} (p={round(p, 5)})."
         )
+
 
 if __name__ == "__main__":
 

@@ -60,8 +60,8 @@ def main():
         dataset = load_from_disk(PARAMS["data"])
     else:
         dataset = load_dataset(PARAMS["data"])
-    tokenizer = AutoTokenizer.from_pretrained(PARAMS['tokenizer'])
-    model = AutoModelForSequenceClassification.from_pretrained(PARAMS['model'])
+    tokenizer = AutoTokenizer.from_pretrained(PARAMS["tokenizer"])
+    model = AutoModelForSequenceClassification.from_pretrained(PARAMS["model"])
 
     # Tokenize Test Data
     def tokenize_function(batch):

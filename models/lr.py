@@ -38,6 +38,7 @@ from sklearn.metrics import f1_score
 from transformers import AutoTokenizer
 from utils import make_lr_model_and_target_multi_class
 
+
 def main():
 
     # Load Run Parameters
@@ -49,10 +50,10 @@ def main():
     logger = logging.getLogger(__name__)
 
     # Define output path and output data name
-    output_path = f"./lr_outputs_{PARAMS['data']}/"  # will be deleted if it already exists
-    output_data_name = (
-        f"ngram_range_{PARAMS['n_gram_range_min']}_{PARAMS['n_gram_range_max']}_features_coefs_count_vec_no_reg"
+    output_path = (
+        f"./lr_outputs_{PARAMS['data']}/"  # will be deleted if it already exists
     )
+    output_data_name = f"ngram_range_{PARAMS['n_gram_range_min']}_{PARAMS['n_gram_range_max']}_features_coefs_count_vec_no_reg"
 
     # Create Directory to Save Results
     # This script is for demo purposes and **will delete** the `output_path` directory if it exists on each new run.
@@ -75,9 +76,11 @@ def main():
     def tokenize_function(sample):
 
         return tokenizer(
-            sample["text"], padding="do_not_pad", truncation=True, max_length=PARAMS['max_seq_len']
+            sample["text"],
+            padding="do_not_pad",
+            truncation=True,
+            max_length=PARAMS["max_seq_len"],
         )
-
 
     # Define transformation to tokenize data in batches
     dataset = dataset.map(
@@ -122,7 +125,7 @@ def main():
             strip_accents="unicode",
             analyzer="word",
             token_pattern=r"\w{1,}",
-            ngram_range=(PARAMS['n_gram_range_min'], PARAMS['n_gram_range_max']),
+            ngram_range=(PARAMS["n_gram_range_min"], PARAMS["n_gram_range_max"]),
             min_df=0.00001,
             max_df=0.2,
         )
@@ -181,15 +184,18 @@ def main():
 
             return estimator
 
-
     # Fit vanilla logistic regression
     # Regularization will screw up coefficient interpretation
     clf = LogisticRegression(
-        solver="sag", fit_intercept=True, max_iter=5000, class_weight=None, penalty="none"
+        solver="sag",
+        fit_intercept=True,
+        max_iter=5000,
+        class_weight=None,
+        penalty="none",
     )
 
     # The MIMIC50 dataset is multi-label
-    if PARAMS['data'] == "mimic50":
+    if PARAMS["data"] == "mimic50":
         clf, y_train = make_lr_model_and_target_multi_class(
             clf, y_train, class_strategy="multi_label", n_jobs=10
         )
@@ -215,15 +221,17 @@ def main():
 
         return np.mean(accs), np.std(accs), np.mean(f1s), np.std(f1s)
 
-
     # Compute Predicted Class Labels
-    if PARAMS['data'] == "mimic50":
+    if PARAMS["data"] == "mimic50":
         scores = best_estimator.predict_proba(X_test)
-        preds = np.array((scores >= PARAMS['threshold']), dtype=int)
+        preds = np.array((scores >= PARAMS["threshold"]), dtype=int)
         avg = "micro"
     else:
         preds = np.array(
-            [int(x > PARAMS['threshold']) for x in best_estimator.predict_proba(X_test)[:, 1]]
+            [
+                int(x > PARAMS["threshold"])
+                for x in best_estimator.predict_proba(X_test)[:, 1]
+            ]
         )
         avg = "binary"
 
@@ -242,7 +250,7 @@ def main():
         f.write(f1)
 
     # Extract Final Word Vectorizer and Model
-    if PARAMS['data'] != "mimic50":
+    if PARAMS["data"] != "mimic50":
         word_vectorizer, lr_model = best_estimator[0], best_estimator[1]
     else:
         word_vectorizer, lr_model = best_estimator[0], best_estimator[1]
@@ -272,6 +280,7 @@ def main():
     logger.info(" ")
     logger.info("Top positive predictors:")
     logger.info(sorted_pairs[-100:])
+
 
 if __name__ == "__main__":
 
