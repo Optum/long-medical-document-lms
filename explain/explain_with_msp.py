@@ -72,7 +72,7 @@ def main():
             max_length=PARAMS["max_seq_len"],
         )
 
-   # Tokenize Text
+    # Tokenize Text
     # Code runs on the test data split by default
     dataset = dataset.map(
         tokenize_function, batched=True, batch_size=PARAMS["batch_size"]
@@ -88,7 +88,7 @@ def main():
         data=sample_data,
         class_strategy=PARAMS["class_strategy"],
         average="micro",
-        batch_size=PARAMS["batch_size"]
+        batch_size=PARAMS["batch_size"],
     )
 
     # Start timer
@@ -97,7 +97,9 @@ def main():
     # Run MSP
     times = []
     all_results = []
-    for s, (doc_input_ids, doc_text) in enumerate(zip(sample_data["input_ids"], sample_data["text"])):
+    for s, (doc_input_ids, doc_text) in enumerate(
+        zip(sample_data["input_ids"], sample_data["text"])
+    ):
 
         # Indicate sample number
         logger.info(f"Running MSP for sample {s} of {PARAMS['num_sample']}...")
@@ -117,12 +119,12 @@ def main():
             class_strategy=PARAMS["class_strategy"],
             tokenizer=tokenizer,
             by_sent_segments=PARAMS["by_sent_segments"],
-            batch_size=PARAMS["batch_size"]
+            batch_size=PARAMS["batch_size"],
         )
         all_results.append(results)
 
-        results['indices_len'] = results['masked_text_indices'].apply(lambda x: len(x))
-        results['tokens_len'] = results['masked_text_tokens'].apply(lambda x: len(x))
+        results["indices_len"] = results["masked_text_indices"].apply(lambda x: len(x))
+        results["tokens_len"] = results["masked_text_tokens"].apply(lambda x: len(x))
 
         # Compute time to run MSP on one doc
         doc_time = time.time()
@@ -167,7 +169,7 @@ def main():
         k=PARAMS["K"],
         p=PARAMS["P"],
         m=PARAMS["M"],
-        by_sent_segments=PARAMS["by_sent_segments"]
+        by_sent_segments=PARAMS["by_sent_segments"],
     )
 
     # End timer

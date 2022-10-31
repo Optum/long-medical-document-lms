@@ -14,8 +14,9 @@ from utils import (
     configure_model_for_inference,
     convert_binary_to_multi_label,
     torch_model_predict,
-    torch_model_predict_indiv
+    torch_model_predict_indiv,
 )
+
 
 def run_trial_on_fixed_blocks(tokenizer, input_ids, p, k):
 
@@ -47,13 +48,17 @@ def run_trial_on_fixed_blocks(tokenizer, input_ids, p, k):
 
     return new_sample, masked_text_tokens, masked_text_indices
 
+
 def run_trial_on_sentences(segmenter, tokenizer, text, p):
 
     # Check that tokenizer always gives us a CLS and SEP token at the start and end
     test_sent = "This is a test sentence."
     e_test_sent = tokenizer.encode(test_sent)
     assert_msg = "Tokenizer should always add CLS and SEP tokens to the start and end of each input sequence respectively."
-    assert e_test_sent[0] == tokenizer.cls_token_id and e_test_sent[-1] == tokenizer.sep_token_id, assert_msg
+    assert (
+        e_test_sent[0] == tokenizer.cls_token_id
+        and e_test_sent[-1] == tokenizer.sep_token_id
+    ), assert_msg
 
     # At each trial, save the masked tokens and the start index of each block
     masked_text_tokens = []
@@ -104,7 +109,7 @@ def predict_with_masked_texts(
     class_strategy,
     tokenizer,
     by_sent_segments,
-    batch_size
+    batch_size,
 ):
     """
     Returns the probabilities for each label for each iteration with the masked strings and labels.
@@ -142,21 +147,22 @@ def predict_with_masked_texts(
         if i % print_every == 0:
             print(f"   On iteration {i} of {n}...")
 
-
         # Generate sentence-level or fixed block-level explanations
         if by_sent_segments:
-            new_sample, masked_text_tokens, masked_text_indices = run_trial_on_sentences(
-                segmenter=segmenter,
-                tokenizer=tokenizer,
-                text=text,
-                p=p
+            (
+                new_sample,
+                masked_text_tokens,
+                masked_text_indices,
+            ) = run_trial_on_sentences(
+                segmenter=segmenter, tokenizer=tokenizer, text=text, p=p
             )
         else:
-            new_sample, masked_text_tokens, masked_text_indices = run_trial_on_fixed_blocks(
-                tokenizer=tokenizer,
-                input_ids=input_ids,
-                p=p,
-                k=k
+            (
+                new_sample,
+                masked_text_tokens,
+                masked_text_indices,
+            ) = run_trial_on_fixed_blocks(
+                tokenizer=tokenizer, input_ids=input_ids, p=p, k=k
             )
 
         # Save the masked blocks and start indices from this trial
@@ -168,7 +174,11 @@ def predict_with_masked_texts(
 
     # Pad new sequences
     # Generate pointers to check that predictions are returned in the same order
-    padded_sequences = pad_sequence(torch.tensor(collected_new_samples, dtype=torch.int64), batch_first=True, padding_value=tokenizer.pad_token_id)
+    padded_sequences = pad_sequence(
+        torch.tensor(collected_new_samples, dtype=torch.int64),
+        batch_first=True,
+        padding_value=tokenizer.pad_token_id,
+    )
     pointers_orig = torch.tensor([[i] for i in range(len(padded_sequences))])
 
     # Build dataset of new sequences to use to generate label probabilities
@@ -180,7 +190,7 @@ def predict_with_masked_texts(
         shuffle=False,
         sampler=None,
         batch_sampler=None,
-        num_workers=0
+        num_workers=0,
     )
 
     # Iterate through data loader to make predictions and return the pointers
@@ -188,12 +198,14 @@ def predict_with_masked_texts(
         model=model,
         test_loader=dataloader,
         class_strategy=class_strategy,
-        return_data_loader_targets=True
+        return_data_loader_targets=True,
     )
 
     # Check that predictions came back in the same order
     # We want all_probs, all_masked_text_tokens, and all_masked_text_indices in corresponding order
-    assert np.array_equal(pointers_orig.numpy(), pointers_returned), "Order of records was shuffled during inference!"
+    assert np.array_equal(
+        pointers_orig.numpy(), pointers_returned
+    ), "Order of records was shuffled during inference!"
 
     # Build dataframe of results
     results = pd.DataFrame(
@@ -223,7 +235,7 @@ def post_process_and_save_msp_results(
     k,
     p,
     m,
-    by_sent_segments
+    by_sent_segments,
 ):
     """
     This step iterates through the results of running MSP for each document and:

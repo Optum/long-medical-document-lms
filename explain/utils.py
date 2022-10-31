@@ -7,6 +7,7 @@ import numpy as np
 from torch.utils.data import DataLoader, TensorDataset
 from sklearn.metrics import average_precision_score
 
+
 def configure_device():
 
     return "cuda:0" if torch.cuda.is_available() else "cpu"
@@ -65,7 +66,10 @@ def torch_model_predict_indiv(model, sample_input_ids, class_strategy):
 
     return prob
 
-def torch_model_predict(model, test_loader, class_strategy, return_data_loader_targets=False):
+
+def torch_model_predict(
+    model, test_loader, class_strategy, return_data_loader_targets=False
+):
     """
     Given a PyTorch model whose forward method
     returns an object with a logits attribute
@@ -181,7 +185,9 @@ def convert_1d_binary_labels_to_2d(labels):
             return np.array(labels)
 
 
-def check_average_precision(model, data, batch_size, class_strategy, average, round_to=4):
+def check_average_precision(
+    model, data, batch_size, class_strategy, average, round_to=4
+):
     """
     Loop over many documents to generate inferences.
     It would be more efficient to predict on batches,
@@ -200,7 +206,10 @@ def check_average_precision(model, data, batch_size, class_strategy, average, ro
     model = configure_model_for_inference(model)
 
     # Build data loader
-    ds = TensorDataset(torch.tensor(data["input_ids"], dtype=torch.int64), torch.tensor(data["label"], dtype=torch.float32))
+    ds = TensorDataset(
+        torch.tensor(data["input_ids"], dtype=torch.int64),
+        torch.tensor(data["label"], dtype=torch.float32),
+    )
     dataloader = DataLoader(ds, batch_size=batch_size)
 
     # Generate predictions in batch
@@ -208,7 +217,7 @@ def check_average_precision(model, data, batch_size, class_strategy, average, ro
         model=model,
         test_loader=dataloader,
         class_strategy=class_strategy,
-        return_data_loader_targets=True
+        return_data_loader_targets=True,
     )
 
     # Compute multi-class or multi-label metrics
@@ -236,5 +245,3 @@ def check_average_precision(model, data, batch_size, class_strategy, average, ro
         )
 
         print(f"Average Precision: {ap}.")
-
-        
