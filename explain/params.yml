@@ -21,14 +21,11 @@ class_strategy: "multi_class"
 # Provide the name of a HuggingFace dataset if offline is set to False
 # Script has been tested with ['sst2', 'yelp_polarity', 'imdb']
 # If offline is set to True, provide the path to a saved HuggingFace dataset
-# The batch_size parameters is for tokenization only
-# An improvement to this codebase would be to
-# Collect sequences in batches when running inference
 # The num_sample parameter is the number of documents to sample from
 # The test split of the provided dataset, which is used by default
 offline: False
 data: "imdb"
-batch_size: 32
+batch_size: 4
 num_sample: 5
 
 # Label parameters
@@ -58,11 +55,12 @@ idx2label:
 # And we used P = 0.1.
 # More bootstrap iterations is better.
 # Use something like 10000 bootstrap iterations.
-K: 5  # subwords in a masked block of text (size of phrase for MSP or radius for SOC)
+K: 5  # subwords in a masked block of text (size of phrase for MSP or radius for SOC) - ignored if by_sent_segments is True
 P: 0.1  # probability that a block of size K is masked - For MSP, set such that expected draws for a single block is 100
 N: 1000  # number of iterations to run - For MSP set such that expected draws for a single block is 100 by computing 1000 / P
 M: 5  # show the M most important blocks which led to the greatest difference in predicted probability of the given label
 num_bootstrap: 10000  # set run parameters to compute p values
+by_sent_segments: True # Ignore K and instead generate segment level explanations according to sentence splits
 
 # Quality of life parameters
 # Set debug to True for full runs/real experiments

@@ -3,30 +3,108 @@ Module: Masked Sampling Procedure
 
 """
 import os
+import pysbd
 import torch
 import random
 import numpy as np
 import pandas as pd
+from torch.utils.data import DataLoader, TensorDataset
+from torch.nn.utils.rnn import pad_sequence
 from utils import (
-    predict_with_clf_model,
     configure_model_for_inference,
     convert_binary_to_multi_label,
+    torch_model_predict,
+    torch_model_predict_indiv
 )
+
+def run_trial_on_fixed_blocks(tokenizer, input_ids, p, k):
+
+    # At each trial, save the masked tokens and the start index of each block
+    masked_text_tokens = []
+    masked_text_indices = []
+
+    # For each sample, create a new sample consisting of masked and unmasked blocks
+    new_sample = []
+
+    # Iterate through fixed length blocks
+    for j in range(0, len(input_ids), k):
+        block = input_ids[j : j + k]
+
+        # Mask a block with probability P and add the block to the new sample
+        if random.uniform(0, 1) < p:
+
+            # Create a masked block of appropriate length
+            # Save the index of the block start
+            # Add the block to the new sample
+            # Save the block
+            mask_block = [tokenizer.mask_token_id] * k
+            new_sample.extend(mask_block)
+            masked_text_indices.append(j)
+            masked_text_tokens.append(block)
+
+        else:
+            new_sample.extend(block)
+
+    return new_sample, masked_text_tokens, masked_text_indices
+
+def run_trial_on_sentences(segmenter, tokenizer, text, p):
+
+    # Check that tokenizer always gives us a CLS and SEP token at the start and end
+    test_sent = "This is a test sentence."
+    e_test_sent = tokenizer.encode(test_sent)
+    assert_msg = "Tokenizer should always add CLS and SEP tokens to the start and end of each input sequence respectively."
+    assert e_test_sent[0] == tokenizer.cls_token_id and e_test_sent[-1] == tokenizer.sep_token_id, assert_msg
+
+    # At each trial, save the masked tokens and the start index of each block
+    masked_text_tokens = []
+    masked_text_indices = []
+
+    # For each sample, create a new sample consisting of masked and unmasked blocks
+    # We're removing CLS tokens, so make sure the new sample starts with one
+    new_sample = [tokenizer.cls_token_id]
+
+    # Iterate through logical text segments
+    for segment in segmenter.segment(text):
+
+        # Encode a block and remove the CLS and SEP tokens
+        # Slicing should be faster than removing [tokenizer.cls_token_id, tokenizer.sep_token_id] explicitly
+        # But it assumes these are always present when encoding
+        block = tokenizer.encode(segment)
+        cleaned_block = block[1:-1]
+
+        # Mask a block with probability P and add the block to the new sample
+        if random.uniform(0, 1) < p:
+
+            # Create a masked block of appropriate length
+            # Save the index of the block start
+            # Add the block to the new sample
+            # Save the block
+            mask_block = [tokenizer.mask_token_id] * len(cleaned_block)
+            masked_text_indices.append(len(new_sample))
+            new_sample.extend(mask_block)
+            masked_text_tokens.append(cleaned_block)
+
+        else:
+            new_sample.extend(cleaned_block)
+
+    return new_sample, masked_text_tokens, masked_text_indices
 
 
 def predict_with_masked_texts(
     model,
     input_ids,
+    text,
     n,
     k,
     p,
-    mask_token_id,
     idx2label,
     print_every,
     debug,
-    device,
     max_seq_len,
     class_strategy,
+    tokenizer,
+    by_sent_segments,
+    batch_size
 ):
     """
     Returns the probabilities for each label for each iteration with the masked strings and labels.
@@ -39,15 +117,18 @@ def predict_with_masked_texts(
     )
     print(f"Each block of {k} subword tokens is masked with probability {p}.")
 
-    # Configure model for inference
-    model = configure_model_for_inference(model, device)
-
     # Track the text strings masked in each trial and their indices
     all_masked_text_tokens = []
     all_masked_text_indices = []
 
-    # Track the probabilities for each label from each round of masking for each trail
-    all_probs = []
+    # Collect the new samples created from each round of masking for each trial
+    collected_new_samples = []
+
+    # Initialize segmenter if generating per sentence explanations
+    if by_sent_segments:
+
+        # Initialize segmenter
+        segmenter = pysbd.Segmenter(language="en", clean=False)
 
     # Run trials
     for i in range(n):
@@ -61,36 +142,58 @@ def predict_with_masked_texts(
         if i % print_every == 0:
             print(f"   On iteration {i} of {n}...")
 
-        # At each trial, save the strings of masked text and the start index of each string
-        masked_text_tokens = []
-        masked_text_indices = []
 
-        # For each sample, create a new sample consisting of masked and unmasked blocks
-        new_sample = []
-        for j in range(0, len(input_ids), k):
-            block = input_ids[j : j + k]
+        # Generate sentence-level or fixed block-level explanations
+        if by_sent_segments:
+            new_sample, masked_text_tokens, masked_text_indices = run_trial_on_sentences(
+                segmenter=segmenter,
+                tokenizer=tokenizer,
+                text=text,
+                p=p
+            )
+        else:
+            new_sample, masked_text_tokens, masked_text_indices = run_trial_on_fixed_blocks(
+                tokenizer=tokenizer,
+                input_ids=input_ids,
+                p=p,
+                k=k
+            )
 
-            # Mask a block with probability P and add the block to the new sample
-            if random.uniform(0, 1) < p:
-                mask_block = [mask_token_id] * k
-                new_sample.extend(mask_block)
-                masked_text_indices.append(j)
-                masked_text_tokens.append(block)
-            else:
-                new_sample.extend(block)
-
-        # Compute probabilities of each label on the new sample
-        prob = predict_with_clf_model(
-            model,
-            sample_input_ids=[new_sample[0:max_seq_len]],
-            device=device,
-            class_strategy=class_strategy,
-        )[0]
-
-        # Save the probabilities, text strings, and indices from this trial
-        all_probs.append(prob)
+        # Save the masked blocks and start indices from this trial
         all_masked_text_tokens.append(masked_text_tokens)
         all_masked_text_indices.append(masked_text_indices)
+
+        # Collect the new sample from this trial
+        collected_new_samples.append(new_sample[0:max_seq_len])
+
+    # Pad new sequences
+    # Generate pointers to check that predictions are returned in the same order
+    padded_sequences = pad_sequence(torch.tensor(collected_new_samples, dtype=torch.int64), batch_first=True, padding_value=tokenizer.pad_token_id)
+    pointers_orig = torch.tensor([[i] for i in range(len(padded_sequences))])
+
+    # Build dataset of new sequences to use to generate label probabilities
+    # Include the pointers we created
+    ds = TensorDataset(padded_sequences, pointers_orig)
+    dataloader = DataLoader(
+        dataset=ds,
+        batch_size=batch_size,
+        shuffle=False,
+        sampler=None,
+        batch_sampler=None,
+        num_workers=0
+    )
+
+    # Iterate through data loader to make predictions and return the pointers
+    all_probs, pointers_returned = torch_model_predict(
+        model=model,
+        test_loader=dataloader,
+        class_strategy=class_strategy,
+        return_data_loader_targets=True
+    )
+
+    # Check that predictions came back in the same order
+    # We want all_probs, all_masked_text_tokens, and all_masked_text_indices in corresponding order
+    assert np.array_equal(pointers_orig.numpy(), pointers_returned), "Order of records was shuffled during inference!"
 
     # Build dataframe of results
     results = pd.DataFrame(
@@ -109,7 +212,6 @@ def post_process_and_save_msp_results(
     all_input_ids,
     all_labels,
     times,
-    device,
     tokenizer,
     num_sample,
     max_seq_len,
@@ -121,6 +223,7 @@ def post_process_and_save_msp_results(
     k,
     p,
     m,
+    by_sent_segments
 ):
     """
     This step iterates through the results of running MSP for each document and:
@@ -134,7 +237,7 @@ def post_process_and_save_msp_results(
     """
 
     # Configure model for inference
-    model = configure_model_for_inference(model, device)
+    model = configure_model_for_inference(model)
 
     # Iterate through results on all documents to post-process and save explanations
     for s, (results, doc_input_ids, doc_y, doc_time) in enumerate(
@@ -151,10 +254,9 @@ def post_process_and_save_msp_results(
         )
 
         # Get predictions on sample with no masking
-        full_yhat = predict_with_clf_model(
+        full_yhat = torch_model_predict_indiv(
             model,
             sample_input_ids=[doc_input_ids[0:max_seq_len]],
-            device=device,
             class_strategy=class_strategy,
         )[0]
 
@@ -252,7 +354,7 @@ def post_process_and_save_msp_results(
             # Add parameters used to generate results
             top_m_df["sample"] = s
             top_m_df["P"] = p
-            top_m_df["K"] = k
+            top_m_df["K"] = k if not by_sent_segments else "By Sentence Segments"
             top_m_df["N"] = n
             top_m_df["runtime_secs"] = doc_time
 

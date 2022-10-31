@@ -52,9 +52,6 @@ def main():
         shutil.rmtree(output_path)
     os.makedirs(output_path)
 
-    # Configure Device and Empty GPU Cache
-    device = "cuda:0" if torch.cuda.is_available() else "cpu"
-
     # Load Data, Tokenizer, and Model
     if PARAMS["offline"]:
         os.environ["HF_DATASETS_OFFLINE"] = "1"
@@ -75,23 +72,23 @@ def main():
             max_length=PARAMS["max_seq_len"],
         )
 
-    # Tokenize Text
+   # Tokenize Text
     # Code runs on the test data split by default
-    dataset["test"] = dataset["test"].map(
+    dataset = dataset.map(
         tokenize_function, batched=True, batch_size=PARAMS["batch_size"]
     )
 
     # Take a Random Sample of the Test Data
-    sample_data = dataset["test"].shuffle()[0 : PARAMS["num_sample"]]
+    sample_data = dataset.shuffle()[0 : PARAMS["num_sample"]]
 
     # Check Average Precision of Classifier
     # To Do: Add CIs to prediction
     check_average_precision(
         model=model,
         data=sample_data,
-        device=device,
         class_strategy=PARAMS["class_strategy"],
-        average="macro",
+        average="micro",
+        batch_size=PARAMS["batch_size"]
     )
 
     # Start timer
@@ -100,7 +97,7 @@ def main():
     # Run MSP
     times = []
     all_results = []
-    for s, doc_input_ids in enumerate(sample_data["input_ids"]):
+    for s, (doc_input_ids, doc_text) in enumerate(zip(sample_data["input_ids"], sample_data["text"])):
 
         # Indicate sample number
         logger.info(f"Running MSP for sample {s} of {PARAMS['num_sample']}...")
@@ -109,18 +106,23 @@ def main():
         results = predict_with_masked_texts(
             model=model,
             input_ids=doc_input_ids,
+            text=doc_text,
             n=PARAMS["N"],
             k=PARAMS["K"],
             p=PARAMS["P"],
-            mask_token_id=tokenizer.mask_token_id,
             idx2label=PARAMS["idx2label"],
             print_every=PARAMS["print_every"],
             debug=PARAMS["debug"],
-            device=device,
             max_seq_len=PARAMS["max_seq_len"],
             class_strategy=PARAMS["class_strategy"],
+            tokenizer=tokenizer,
+            by_sent_segments=PARAMS["by_sent_segments"],
+            batch_size=PARAMS["batch_size"]
         )
         all_results.append(results)
+
+        results['indices_len'] = results['masked_text_indices'].apply(lambda x: len(x))
+        results['tokens_len'] = results['masked_text_tokens'].apply(lambda x: len(x))
 
         # Compute time to run MSP on one doc
         doc_time = time.time()
@@ -154,7 +156,6 @@ def main():
         all_input_ids=sample_data["input_ids"],
         all_labels=sample_data["label"],
         times=times,
-        device=device,
         tokenizer=tokenizer,
         num_sample=PARAMS["num_sample"],
         max_seq_len=PARAMS["max_seq_len"],
@@ -166,6 +167,7 @@ def main():
         k=PARAMS["K"],
         p=PARAMS["P"],
         m=PARAMS["M"],
+        by_sent_segments=PARAMS["by_sent_segments"]
     )
 
     # End timer
