@@ -56,3 +56,7 @@
 # Resume from checkpoint
 'resume_training': False
 'checkpoint': "./bigbird_imdb/checkpoint-280000/"
+
+# Train vs test mode
+'train': True
+'test_model_checkpoint': "./bigbird_imdb/checkpoint-280000/"
