@@ -1,4 +1,4 @@
-Please cite our paper, [*Extend and Explain: Interpreting Very Long Language Models*](https://arxiv.org/abs/2209.01174),
+Please cite our paper, ["Extend and Explain: Interpreting Very Long Language Models"](https://arxiv.org/abs/2209.01174),
 if you use this code in your project.  Thank you!
 
 @misc{stremmel_extend_2022,
