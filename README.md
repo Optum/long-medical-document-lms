@@ -79,4 +79,4 @@ Distributed under the Apache 2.0 license. See `LICENSE.txt` for more information
 
 ### Citation
 
-If you use this code in your research, please cite our paper: [*Extend and Explain: Interpreting Very Long Language Models*](https://arxiv.org/abs/2209.01174).
+If you use this code in your research, please cite our paper: ["Extend and Explain: Interpreting Very Long Language Models"](https://arxiv.org/abs/2209.01174).
