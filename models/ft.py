@@ -47,7 +47,7 @@ def main():
 
     # Check, Empty, and Count GPUs
     check_empty_count_gpus(logger=logger)
-    
+
     # Only create a run directory if training a new model
     if PARAMS["train"]:
 
@@ -132,7 +132,7 @@ def main():
         )
         .with_format("torch")
     )
-    
+
     # Define everything we train a new model
     # Or to continue training a model
     # Then, train it
@@ -230,10 +230,10 @@ def main():
         tokenizer.save_pretrained(
             os.path.join(current_run_dir, f'{PARAMS["model_name"]}_tokenizer')
         )
-    
+
     # Load a model for testing
     else:
-        
+
         # Define model and trainer for testing only
         model = AutoModelForSequenceClassification.from_pretrained(PARAMS["test_model_checkpoint"])
         trainer = Trainer(model=model)
@@ -249,7 +249,7 @@ def main():
         probs = torch.nn.functional.softmax(torch.tensor(output.predictions))
     else:
         raise ValueError(
-            f"Expected class_strategy to be one of ['multi_label', 'multi_class'] but got {PARAMS["class_strategy"]}."
+            f"Expected class_strategy to be one of ['multi_label', 'multi_class'] but got {PARAMS['class_strategy']}."
         )
 
     # Compute final performance
@@ -258,11 +258,11 @@ def main():
 
     # Save metrics to the training run directory if we're training
     if PARAMS["train"]:
-        
+
         # Save metrics to the training directory
         with open(os.path.join(current_run_dir, "metrics.json"), "w") as f:
             json.dump(metrics_dict, f)
-    
+
     # Save metrics to the root directory
     with open("./metrics.json", "w") as f:
             json.dump(metrics_dict, f)
@@ -270,7 +270,7 @@ def main():
     # Log metrics
     logger.info(metrics_dict)
 
-    
+
 if __name__ == "__main__":
 
     main()
