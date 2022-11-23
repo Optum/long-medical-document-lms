@@ -35,7 +35,7 @@ The code used for the experiments in ["Extend and Explain"](https://arxiv.org/ab
 
 All scripts are intended to be run in a Python 3.8 [Anaconda](https://www.anaconda.com/products/individual) environment.  To create such an environment run `conda create --name text-blocks python=3.8` then `source activate text-blocks` to activate the environment. Dependencies can be installed from `requirements.txt` by running `pip install -r requirements.txt` from the base directory of this repository.  
 
-The explainability experiment scripts are equipped to run LM inference on a single GPU VM and have been tested on Azure `Standard_NC6s_v3` machines which have 16 GB GPU RAM, while the training scripts in `models/` (except for `lr.py`) use [PyTorch Data Parallelism](https://pytorch.org/docs/stable/generated/torch.nn.DataParallel.html) to distribute training over a single node with multiple GPUs. LM training scripts were tested on Azure `Standard_ND40rs_v2` machines which have 32 GB GPU RAM per GPU and 8 GPUs in total.  
+The explainability experiment scripts are equipped to run LM inference on a single GPU VM and have been tested on Azure `Standard_NC6s_v3` machines which have 16 GB GPU RAM, while the training scripts in `models/` (except for `lr.py`) use [PyTorch Data Parallelism](https://pytorch.org/docs/stable/generated/torch.nn.DataParallel.html) to distribute training over a single node with multiple GPUs. LM training scripts were tested on Azure `Standard_ND40rs_v2` machines which have 32 GB GPU RAM per GPU and 8 GPUs in total.  As of [v0.0.2](https://github.com/Optum/long-medical-document-lms/releases/tag/v0.0.2), the MSP script for generating explanations can run in Data Parallel mode, speeding up inference.  As such, something like the `Standard_ND40rs_v2` with multiple GPUs is a desirable machine for running MSP.
 
 ### LM Training
 
@@ -48,7 +48,7 @@ Explainability scripts can be run from the `explain` directory as follows:
 - To compute text block importance with MSP, adjust the MSP parameters in `explain/params.yml`, then run `python explain_with_msp.py`.  
 - To compute text block importance with SOC, adjust the SOC parameters in `explain/params.yml`, then run `python explain_with_soc.py`.
 
-Be sure to check out and adjust the input data path, trained classifier path, and LM path (in the case of SOC), as well as the parameters for the explainability algorithms before running each script.
+Be sure to check out and adjust the input data path, trained classifier path, and LM path (in the case of SOC), as well as the parameters for the explainability algorithms before running each script.  MSP can generate sentence-level explanations as well as explanations on fixed-length blocks of text.
 
 ### Evaluation
 
