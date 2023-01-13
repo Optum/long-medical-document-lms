@@ -8,6 +8,7 @@ Train and explain language models that extract information from long medical doc
 ### Contents
 
 - [About](#about)
+- [Demo](#demo)
 - [Environment](#environment)
 - [LM Training](#lm-training)
 - [Generating Explanations](#generating-explanations)
@@ -30,6 +31,10 @@ from Jin et al.](https://arxiv.org/pdf/1911.06194.pdf).  MSP is well-suited to v
 The code to run MSP currently supports [HuggingFace LMs](https://huggingface.co/models) and [Datasets](https://huggingface.co/datasets) and would require slight modifications to use other types of models and input data.  If you need to fine-tune or continue pretraining an existing LM, check out `models/README.md`.  To create a Hugging Face Dataset, check out the documentation [here](https://huggingface.co/docs/datasets/index).
 
 The code used for the experiments in ["Extend and Explain"](https://arxiv.org/abs/2209.01174) can be found in the [first release of this repository (v0.0.1)](https://github.com/Optum/long-medical-document-lms/releases/tag/v0.0.1).  Since then, changes have been made to MSP (for example in [PR#10](https://github.com/Optum/long-medical-document-lms/pull/10)) to improve runtime performance and potentially the clinical informativeness of explanations through new features such as GPU-efficient batching and sentence-level masked sampling.
+
+### Demo
+
+<video src='./msp_demo.mp4' width=180/>
 
 ### Environment
 
