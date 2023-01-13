@@ -30,7 +30,7 @@ class_strategy: "multi_class"
 offline: False
 data: "https://raw.githubusercontent.com/socd06/medical-nlp/master/data/X.csv"
 batch_size: 1
-num_sample: 5
+num_sample: 30
 is_csv: True
 one_hot: True
 
