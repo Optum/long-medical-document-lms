@@ -34,7 +34,7 @@ The code used for the experiments in ["Extend and Explain"](https://arxiv.org/ab
 
 ### Demo
 
-<video src='./msp_demo.mp4' width=180/>
+<video src='./msp_demo.mp4'></video>
 
 ### Environment
 
