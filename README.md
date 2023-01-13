@@ -34,6 +34,7 @@ The code used for the experiments in ["Extend and Explain"](https://arxiv.org/ab
 
 ### Demo
 
+[![Demo Video](demo_thumbnail.png)](https://uhgazure.sharepoint.com/:v:/t/OptumLabsMLTeam/EenG9kYBaZlIpjWSn5x6NocBIzlKUJKTLd7g1dFNc_9a3w?e=4JAViO)
 
 ### Environment
 
