@@ -52,12 +52,23 @@ def main():
         shutil.rmtree(output_path)
     os.makedirs(output_path)
 
-    # Load Data, Tokenizer, and Model
+    # Load Data
     if PARAMS["offline"]:
         os.environ["HF_DATASETS_OFFLINE"] = "1"
         dataset = load_from_disk(PARAMS["data"])
+    elif PARAMS["is_csv"]:
+        dataset = load_dataset('csv', data_files={"test" : PARAMS["data"]}, delimiter=",")['test']
     else:
         dataset = load_dataset(PARAMS["data"])
+
+    # Optionally one hot encode labels if not already
+    if PARAMS["one_hot"] and PARAMS["class_strategy"] == "multi_class":
+        label_enum = {k:j for j, k in enumerate(set(dataset['label']))}
+        dataset = dataset.remove_columns("label").add_column(
+            "label", [[1.0 if label_enum[row_label]==i else 0.0 for i in range(len(label_enum))] for row_label in dataset['label']]
+        )
+
+    # Load Tokenizer and Model
     tokenizer = AutoTokenizer.from_pretrained(PARAMS["tokenizer"])
     model = AutoModelForSequenceClassification.from_pretrained(PARAMS["model"])
 
@@ -80,7 +91,7 @@ def main():
 
     # Take a Random Sample of the Test Data
     sample_data = dataset.shuffle()[0 : PARAMS["num_sample"]]
-
+    
     # Check Average Precision of Classifier
     # To Do: Add CIs to prediction
     check_average_precision(
