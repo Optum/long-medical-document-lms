@@ -22,11 +22,18 @@ class_strategy: "multi_class"
 # Script has been tested with ['sst2', 'yelp_polarity', 'imdb']
 # If offline is set to True, provide the path to a saved HuggingFace dataset
 # The num_sample parameter is the number of documents to sample from
-# The test split of the provided dataset, which is used by default
+# The split_name split of the provided dataset at random.
+# To use the full dataset split instead of a random sample,
+# Pass -1 to num_sample and set fixed_sample to False.
+# To use a fixed sample instead of
+# a random sample, set fixed_sample to True and provide
+# the desired number of samples to num_sample.
 offline: False
 data: "imdb"
 batch_size: 4
-num_sample: 5
+split_name: 'test'
+num_sample: 30
+fixed_sample: False
 
 # Label parameters
 # Provide a dictionary of class indices and label names

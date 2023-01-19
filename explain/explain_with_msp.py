@@ -11,6 +11,7 @@ import os
 import yaml
 import time
 import yaml
+import json
 import torch
 import shutil
 import pickle
@@ -52,12 +53,17 @@ def main():
         shutil.rmtree(output_path)
     os.makedirs(output_path)
 
-    # Load Data, Tokenizer, and Model
+    # Load Data
     if PARAMS["offline"]:
         os.environ["HF_DATASETS_OFFLINE"] = "1"
-        dataset = load_from_disk(PARAMS["data"])
+        dataset = load_from_disk(PARAMS["data"])[PARAMS["split_name"]]
     else:
-        dataset = load_dataset(PARAMS["data"])
+        dataset = load_dataset(PARAMS["data"])[PARAMS["split_name"]]
+
+    # Log dataset print summary
+    logger.info(f"Dataset: {dataset}.")
+
+    # Load tokenizer and model
     tokenizer = AutoTokenizer.from_pretrained(PARAMS["tokenizer"])
     model = AutoModelForSequenceClassification.from_pretrained(PARAMS["model"])
 
@@ -78,18 +84,30 @@ def main():
         tokenize_function, batched=True, batch_size=PARAMS["batch_size"]
     )
 
-    # Take a Random Sample of the Test Data
-    sample_data = dataset.shuffle()[0 : PARAMS["num_sample"]]
+    # Optionally sample the data
+    if PARAMS["num_sample"] > 0 and not PARAMS["fixed_sample"]:
+        sample_data = dataset.shuffle()[0 : PARAMS["num_sample"]]
+    elif PARAMS["num_sample"] == -1:
+        sample_data = dataset[0 : len(dataset)]
+    elif PARAMS["num_sample"] > 0 and PARAMS["fixed_sample"]:
+        sample_data = dataset[0 : PARAMS["num_sample"]]
+        idx2id = {i: uid for i, uid in enumerate(sample_data['id'])}
+        logger.info(f"Indices to IDs: {idx2id}.")
+        with open("./sample_idx2id.json", 'w') as f:
+            json.dump(idx2id, f)
+    else:
+        raise ValueError(f"Unexpected params {PARAMS['num_sample']}, {PARAMS['fixed_sample']} provided as num_sample and fixed_sample.")
 
     # Check Average Precision of Classifier
-    # To Do: Add CIs to prediction
-    check_average_precision(
+    logger.info("Computing average precision on labels...")
+    ap_out_str = check_average_precision(
         model=model,
         data=sample_data,
         class_strategy=PARAMS["class_strategy"],
         average="micro",
-        batch_size=PARAMS["batch_size"],
+        batch_size=PARAMS["batch_size"]
     )
+    logger.info(ap_out_str)
 
     # Start timer
     start_time = time.time()
