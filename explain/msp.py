@@ -120,7 +120,6 @@ def predict_with_masked_texts(
     print(
         f"Running {n} iterations to estimate label probabilities with masked blocks of text."
     )
-    print(f"Each block of {k} subword tokens is masked with probability {p}.")
 
     # Track the text strings masked in each trial and their indices
     all_masked_text_tokens = []

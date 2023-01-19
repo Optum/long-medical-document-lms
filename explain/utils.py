@@ -7,7 +7,6 @@ import numpy as np
 from torch.utils.data import DataLoader, TensorDataset
 from sklearn.metrics import average_precision_score
 
-
 def configure_device():
 
     return "cuda:0" if torch.cuda.is_available() else "cpu"
@@ -34,10 +33,12 @@ def configure_model_for_inference(model):
 
     check_empty_count_gpus()
     device = configure_device()
-    model = model.to(device)
 
     if device.find("cuda") > -1:
         model = torch.nn.DataParallel(model)
+        model = model.to(device)
+    else:
+        model = model.to(device)
 
     model = model.eval()
 
@@ -66,10 +67,7 @@ def torch_model_predict_indiv(model, sample_input_ids, class_strategy):
 
     return prob
 
-
-def torch_model_predict(
-    model, test_loader, class_strategy, return_data_loader_targets=False
-):
+def torch_model_predict(model, test_loader, class_strategy, return_data_loader_targets=False):
     """
     Given a PyTorch model whose forward method
     returns an object with a logits attribute
@@ -185,14 +183,10 @@ def convert_1d_binary_labels_to_2d(labels):
             return np.array(labels)
 
 
-def check_average_precision(
-    model, data, batch_size, class_strategy, average, round_to=4
-):
+def check_average_precision(model, data, batch_size, class_strategy, average, round_to=4):
     """
-    Loop over many documents to generate inferences.
-    It would be more efficient to predict on batches,
-    but the explainability methods operate at the level of a single document.
-    When generating an inference, wrap the sample in [] as if providing a batch.
+    Predict on all data and measure AP over many bootstrap iterations.
+    Return strings of AP mean +- stdv formatted for the class strategy.
     """
 
     # Make sure we are looking at either micro or macro average
@@ -202,14 +196,8 @@ def check_average_precision(
         None,
     ], "Expected average to be one of: ['micro', 'macro', None]."
 
-    # Prepare model for inference
-    model = configure_model_for_inference(model)
-
     # Build data loader
-    ds = TensorDataset(
-        torch.tensor(data["input_ids"], dtype=torch.int64),
-        torch.tensor(data["label"], dtype=torch.float32),
-    )
+    ds = TensorDataset(torch.tensor(data["input_ids"], dtype=torch.int64), torch.tensor(data["label"], dtype=torch.float32))
     dataloader = DataLoader(ds, batch_size=batch_size)
 
     # Generate predictions in batch
@@ -217,7 +205,7 @@ def check_average_precision(
         model=model,
         test_loader=dataloader,
         class_strategy=class_strategy,
-        return_data_loader_targets=True,
+        return_data_loader_targets=True
     )
 
     # Compute multi-class or multi-label metrics
@@ -226,22 +214,39 @@ def check_average_precision(
         # Convert a 1D, binary label array to 2D if it's not already
         labels = convert_1d_binary_labels_to_2d(y_trues)
 
-        ap = round(
-            average_precision_score(y_true=labels, y_score=preds, average=average),
-            round_to,
-        )
+        # Get bootstrapped ap and stdv
+        ap, stdv = get_bootstrapped_ap(labels=labels, preds=preds, average=average)
 
-        print(f"Average Precision ({average}): {ap}.")
+        return f"Average Precision ({average}) +- stdv: {round(ap, round_to)} +- {round(stdv, round_to)}."
 
     else:
 
+        # Ensure labels are numpy array
         labels = np.array(y_trues)
-        ap = round(
-            average_precision_score(
-                y_true=labels,
-                y_score=preds,
-            ),
-            round_to,
-        )
 
-        print(f"Average Precision: {ap}.")
+        # Get bootstrapped ap and stdv
+        ap, stdv = get_bootstrapped_ap(labels=labels, preds=preds, average=None)
+
+        return f"Average Precision +- stdv: {round(ap, round_to)} +- {round(stdv, round_to)}."
+
+def get_bootstrapped_ap(labels, preds, average, n_bootstrap=1000):
+    """
+    Compute AP on samples with replacement and report mean and standard deviation.
+    """
+
+    # Run bootstrap iterations
+    aps = []
+    for i in range(n_bootstrap):
+
+        # Sample N records with replacement where N is the total number of records
+        sample_indices = np.random.choice(len(labels), len(labels))
+        sample_labels = labels[sample_indices]
+        sample_preds = preds[sample_indices]
+
+        ap = average_precision_score(
+            sample_labels, sample_preds, average=average
+        )
+        aps.append(ap)
+
+    # Compute and return means and stdv
+    return np.mean(aps), np.std(aps)
