@@ -57,8 +57,17 @@ def main():
     if PARAMS["offline"]:
         os.environ["HF_DATASETS_OFFLINE"] = "1"
         dataset = load_from_disk(PARAMS["data"])[PARAMS["split_name"]]
+    elif PARAMS["is_csv"]:
+        dataset = load_dataset('csv', data_files={"test" : PARAMS["data"]}, delimiter=",")[PARAMS["split_name"]]
     else:
         dataset = load_dataset(PARAMS["data"])[PARAMS["split_name"]]
+
+    # Optionally one hot encode labels if not already
+    if PARAMS["one_hot"] and PARAMS["class_strategy"] == "multi_class":
+        label_enum = {k:j for j, k in enumerate(set(dataset['label']))}
+        dataset = dataset.remove_columns("label").add_column(
+            "label", [[1.0 if label_enum[row_label]==i else 0.0 for i in range(len(label_enum))] for row_label in dataset['label']]
+        )
 
     # Log dataset print summary
     logger.info(f"Dataset: {dataset}.")
