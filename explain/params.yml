@@ -18,30 +18,38 @@ max_seq_len: 512
 class_strategy: "multi_class"
 
 # Data parameters
-# Provide the name of a HuggingFace dataset if offline is set to False
-# Script has been tested with ['sst2', 'yelp_polarity', 'imdb']
-# If offline is set to True, provide the path to a saved HuggingFace dataset
-# The num_sample parameter is the number of documents to sample from
-# The test split of the provided dataset, which is used by default
+# Provide the name of a HuggingFace dataset if offline is set to False.
+# If offline is set to True, provide the path to a saved HuggingFace dataset.
+# Script has been tested with online datasets: ['sst2', 'yelp_polarity', 'imdb']
+# as well as the online CSV: "https://raw.githubusercontent.com/socd06/medical-nlp/master/data/X.csv"
 # If is_csv is true, instead of looking for a HuggingFace dataset,
-# simply load the CSV file.  When working with HuggingFace datasets
-# keep is_csv set to False. Use one_hot to one hot encode dataset
-# labels if not already one hot encoded for multi_class class_strategy.
+# the program will load the CSV file provided from the internet or a local path.
+# When working with HuggingFace datasets keep is_csv set to False. 
+# Use one_hot to one hot encode dataset labels if not already one hot encoded.
+# Currently one_hot only automatically encodes labels for the multi_class class_strategy.
+# If using the multi_label class strategy, provide your own multi-hot encoded data 
+# as the label column (dataset column should be called 'label').
+# The num_sample parameter is the number of documents to sample from.
+# The split_name split of the provided dataset at random.
+# To use the full dataset split instead of a random sample,
+# Pass -1 to num_sample and set fixed_sample to False.
+# To use a fixed sample instead of a random sample, 
+# set fixed_sample to True and provide the desired number of samples to num_sample.
 offline: False
-data: "https://raw.githubusercontent.com/socd06/medical-nlp/master/data/X.csv"
-batch_size: 1
+data: "imdb"
+is_csv: False
+one_hot: False
+batch_size: 4
+split_name: 'test'
 num_sample: 30
-is_csv: True
-one_hot: True
+fixed_sample: False
 
-# # Label parameters
-# # Provide a dictionary of class indices and label names
-# # This should correspond to the label names in the provided dataset
+# Label parameters
+# Provide a dictionary of class indices and label names
+# This should correspond to the label names in the provided dataset
 idx2label:
-  0: "Surgery"
-  1: "Medical Records"
-  2: "Internal Medicine"
-  3: "Other"
+  0: "Negative Sentiment"
+  1: "Positive Sentiment"
 
 # MSP and SOC parameters
 # Note that P is only used in MSP
