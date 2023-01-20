@@ -11,9 +11,9 @@
 # The max_seq_len should be that of the model and tokenizer
 # The class_strategy should be one of ['binary', 'multi_label', 'multi_class']
 # Based on the type of classification problem
-model: "mnaylor/bioclinical-bert-finetuned-mtsamples"
-lm: ""
-tokenizer: "mnaylor/bioclinical-bert-finetuned-mtsamples"
+model: "textattack/distilbert-base-uncased-imdb"
+lm: "distilbert-base-uncased"
+tokenizer: "distilbert-base-uncased"
 max_seq_len: 512
 class_strategy: "multi_class"
 
@@ -24,16 +24,16 @@ class_strategy: "multi_class"
 # as well as the online CSV: "https://raw.githubusercontent.com/socd06/medical-nlp/master/data/X.csv"
 # If is_csv is true, instead of looking for a HuggingFace dataset,
 # the program will load the CSV file provided from the internet or a local path.
-# When working with HuggingFace datasets keep is_csv set to False. 
+# When working with HuggingFace datasets keep is_csv set to False.
 # Use one_hot to one hot encode dataset labels if not already one hot encoded.
 # Currently one_hot only automatically encodes labels for the multi_class class_strategy.
-# If using the multi_label class strategy, provide your own multi-hot encoded data 
+# If using the multi_label class strategy, provide your own multi-hot encoded data
 # as the label column (dataset column should be called 'label').
 # The num_sample parameter is the number of documents to sample from.
 # The split_name split of the provided dataset at random.
 # To use the full dataset split instead of a random sample,
 # Pass -1 to num_sample and set fixed_sample to False.
-# To use a fixed sample instead of a random sample, 
+# To use a fixed sample instead of a random sample,
 # set fixed_sample to True and provide the desired number of samples to num_sample.
 offline: False
 data: "imdb"
