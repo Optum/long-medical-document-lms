@@ -26,7 +26,7 @@ This codebase contains scripts to:
 2. Compute the importance of multi-token text blocks to fine-tuned LM predictions for a given document or set of documents using a variety of methods.
 
 In our paper, ["Extend and Explain: Interpreting Very Long Language Models"](https://arxiv.org/abs/2209.01174), we propose a novel method called the Masked Sampling Procedure (MSP) and compare it to 1) random sampling and 2) the [Sampling and Occlusion (SOC) algorithm
-from Jin et al.](https://arxiv.org/pdf/1911.06194.pdf).  MSP is well-suited to very long, sparse-attention LMs, and has been validated for medical documents using two physician annotators.  
+from Jin et al.](https://arxiv.org/pdf/1911.06194.pdf).  MSP is well-suited to very long, sparse-attention LMs, and has been validated for medical documents using two physician annotators.  You can learn more about our paper by reading it or checking our [our presentation](https://github.com/Optum/long-medical-document-lms/blob/main/img/extend_and_explain_extended_talk.pptx).
 
 The code to run MSP currently supports [HuggingFace LMs](https://huggingface.co/models) and [Datasets](https://huggingface.co/datasets) and would require slight modifications to use other types of models and input data.  If you need to fine-tune or continue pretraining an existing LM, check out `models/README.md`.  To create a Hugging Face Dataset, check out the documentation [here](https://huggingface.co/docs/datasets/index).
 
