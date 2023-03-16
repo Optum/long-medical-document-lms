@@ -153,10 +153,9 @@ def convert_1d_binary_labels_to_2d(labels):
     """
 
     # Convert a 1D, binary label array to 2D
-    if isinstance(labels[0], int):
+    if isinstance(labels[0], int) or isinstance(labels[0], float):
 
         # Check that we have a binary list
-        assert isinstance(labels, list), "Expected labels to be a list."
         assert len(np.array(labels).shape), "Expected labels to be 1D."
         assert all(
             x == 0 or x == 1 for x in labels
