@@ -20,7 +20,7 @@ Train and explain language models that extract information from long medical doc
 
 ### Quick Start
 
-To run the Masked Sampling Procedure (MSP) to generate sentence-level explanations of a document-level classifier, `cd` to `explain`, then run `python explain_with_msp.py`.  Adjust `explain/params.yml` to provide your data and model as input.  To learn more about this repository, the recommended environment to run MSP, the option to train your own models with this repository, and how MSP was evaluated, check out the following sections of this README.
+To run the Masked Sampling Procedure (MSP) to generate sentence-level explanations of a document-level classifier, `cd` to `explain`, then run `python explain_with_msp.py`.  Adjust `explain/params.yml` to provide your data and model as input, or test MSP using the default options (requires access to [HuggingFace](https://huggingface.co/models)).  To learn more about this repository, the recommended environment to run MSP, the option to train your own models with this repository, and how MSP was evaluated, check out the following sections of this README.
 
 ### About
 
