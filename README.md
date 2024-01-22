@@ -8,6 +8,7 @@ Train and explain language models that extract information from long medical doc
 ### Contents
 
 - [About](#about)
+- [Quick Start](#quick-start)
 - [Environment](#environment)
 - [LM Training](#lm-training)
 - [Generating Explanations](#generating-explanations)
@@ -16,6 +17,10 @@ Train and explain language models that extract information from long medical doc
 - [License](#license)
 - [Maintainers](#maintainers)
 - [Citation](#citation)
+
+### Quick Start
+
+To run the Masked Sampling Procedure (MSP) to generate sentence-level explanations of a document-level classifier, `cd` to `explain`, then run `python explain_with_msp.py`.  Adjust `explain/params.yml` to provide your data and model as input.  To learn more about this repository, the specific environment used to run MSP and train models, as well as how MSP was evaluated, check out the following sections of this README.
 
 ### About
 
