@@ -1,0 +1,29 @@
+
+dataset_path: '../text_label.hf'
+tokenizer_id: 'Meta-Llama-3-8B/mlflow_model_folder/data/model'
+model_id: 'mlflow_model_folder/data/model'
+output_path: 'output'
+model_name: 'Meta-Llama-3-8B'
+
+train: True
+resume_training: False
+resume_checkpoint: ""
+test_checkpoint: ""
+unllama: False # controls autoregressive masking
+
+batch_size: 2
+gradient_accumulation_steps: 64
+early_stopping_patience: 10
+learning_rate: 0.0001
+lora_r: 16
+lora_a: 32
+max_length: 2048 # was 8192
+warmup_steps: 500
+eval_steps: 200
+save_steps: 200
+logging_steps: 200
+pooling_strategy: 'max' # use max for unllama, LlamaForSequenceClassification uses the last token to do the classification, as other causal models (e.g. GPT-2) do
+
+id2label:
+    0: "Negative"
+    1: "Positive"
