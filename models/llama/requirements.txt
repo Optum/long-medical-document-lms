@@ -4,4 +4,4 @@ numpy
 peft
 transformers==4.35.1
 sentencepiece==0.1.99
-torch==1.13.1
+torch

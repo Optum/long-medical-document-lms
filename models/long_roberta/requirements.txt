@@ -7,7 +7,7 @@ pandas
 datasets
 protobuf
 matplotlib
-torch==1.13.1
+torch
 accelerate
 pyarrow
 pytest
