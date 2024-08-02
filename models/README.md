@@ -9,7 +9,7 @@ Code to continue pretraining and fine-tune LMs from Hugging Face Transformers
 
 This subdirectory contains code to continue pretraining and fine-tune LMs from Hugging Face Transformers using the [Transformers Python library](https://github.com/huggingface/transformers).  The code assumes that LMs for continued pretraining and fine-tuning exist on your file-system at paths specified in `.yml`, but can be easily modified to load models over HTTP by replacing these paths with the corresponding LM names from Hugging Face.  Click a model from their [models page](https://huggingface.co/models) and then check out their "Use in Transformers" tab, to see how to download a model over HTTP.
 
-The `llama` and `long_roberta` directories were added later.  These contain code for additional long document classification baselines.
+The `llama` and `long_roberta` directories were added later.  These contain code for additional long document classification baselines.  Compare these methods to long encoder-based LMs.  
 
 ### Data Prep
 
