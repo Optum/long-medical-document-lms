@@ -1,0 +1,13 @@
+transformers==4.34.0
+tokenizers==0.14.1
+PyYAML
+sentencepiece
+scikit-learn
+pandas
+datasets
+protobuf
+matplotlib
+torch==1.13.1
+accelerate
+pyarrow
+pytest

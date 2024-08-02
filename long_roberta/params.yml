@@ -1,0 +1,49 @@
+# Data
+'dataset_path': 'text_label.hf'
+
+# Pretrained LM
+'tokenizer_path': 'roberta-base'
+'bert_path': 'roberta-base'
+
+# Output LM
+'output_path': 'roberta_base_text_only_mean/' 
+
+# Model Name
+'model_name': 'roberta_base_text_only_mean'
+
+# Load from file
+'model_load_from_file': False
+
+# Pooled BERT Parameters
+'use_pooled_bert': True
+'pooling_strategy': 'mean' # one of ['mean', 'max', 'custom_agg'] 
+'custom_agg_c': 2 
+'size': 510
+'step': 100
+'minimal_length': 1
+'max_num_segments': 5 # Each segment adds another (size - step) bits of information.  For 2048 seq len: 5 * (510 - 100) = 2050
+
+# Linear layer dim
+'linear_dim': 768 #1024
+
+# Training Parameters
+'epochs': 10000000
+'early_stopping_epochs': 5
+'batch_size': 8 # Warning, from a memory consumption perspective, batches are ragged.  This is the min # of chunks used in a forward pass.
+'accumulation_steps': 16 # Because of the above, we don't exactly know the effective batch size.
+'learning_rate': 0.00005
+'num_labels': 1
+'adam_beta1': 0.9
+'adam_beta2': 0.999
+'adam_epsilon': 0.00000001
+'warmup_steps': 100
+'weight_decay': 0.01
+'seed': 1111
+
+# Devices
+'device': 'cuda'
+'visible_gpus': "0" #"0,1,2,3,4,5,6,7"
+
+# Test data
+test_with_imdb_data: False
+imdb_data: 'sample_data/imdb_kaggle.csv'
